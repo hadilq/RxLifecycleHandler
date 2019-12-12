@@ -18,8 +18,8 @@ object Depends {
     const val appCompat = "androidx.appcompat:appcompat:${Versions.appCompat}"
     const val lifecycle = "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycle}"
     const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:${Versions.lifecycle}"
-    const val rxJava = "io.reactivex.rxjava2:rxjava:2.2.7"
-    const val rxAndroid = "io.reactivex.rxjava2:rxandroid:2.1.1"
+    const val rxJava = "io.reactivex.rxjava2:rxjava:${Versions.rx}"
+    const val rxAndroid = "io.reactivex.rxjava2:rxandroid:${Versions.rxAndroid}"
 
     const val junit = "junit:junit:${Versions.junit}"
     const val mockito = "com.nhaarman:mockito-kotlin:${Versions.mockito}"
