@@ -22,9 +22,10 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:3.5.2")
+        classpath("com.android.tools.build:gradle:3.5.3")
         classpath(kotlin("gradle-plugin", version = Versions.kotlin))
         classpath("org.jetbrains.dokka:dokka-gradle-plugin:${Versions.dokka}")
+        classpath("com.dicedmelon.gradle:jacoco-android:${Versions.jacoco}")
     }
 }
 
