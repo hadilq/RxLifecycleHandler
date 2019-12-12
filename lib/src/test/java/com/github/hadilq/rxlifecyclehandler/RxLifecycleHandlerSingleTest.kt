@@ -16,6 +16,7 @@
 package com.github.hadilq.rxlifecyclehandler
 
 import io.reactivex.Single
+import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 import org.hamcrest.core.Is.`is`
 import org.junit.Assert.assertThat
@@ -34,29 +35,34 @@ class RxLifecycleHandlerSingleTest {
     @Mock
     private lateinit var observer: (String) -> Unit
 
+    @Mock
+    private lateinit var onNext: Consumer<String>
+
+    @Mock
+    private lateinit var onError: Consumer<Throwable>
+
     private lateinit var publisher: PublishSubject<String>
     private lateinit var single: Single<String>
     private lateinit var owner: TestLifecycleOwner
-    private lateinit var handler: RxLifecycleHandlerSingle<String>
 
     @Before
     fun setup() {
         owner = TestLifecycleOwner()
         publisher = PublishSubject.create<String>()
-        handler = RxLifecycleHandlerSingle()
         single = publisher.single(ANY_STRING)
     }
 
+    // region OBSERVE
     @Test
     fun `in case of just observe, single should not has observer`() {
-        owner.(handler.observe(single::subscribe))(observer)
+        owner.(single.observe())(observer)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
     fun `in case of observe then start, single should has observer`() {
-        owner.(handler.observe(single::subscribe))(observer)
+        owner.(single.observe())(observer)
 
         owner.start()
 
@@ -65,7 +71,7 @@ class RxLifecycleHandlerSingleTest {
 
     @Test
     fun `in case of observe then start then stop, single should not has observer`() {
-        owner.(handler.observe(single::subscribe))(observer)
+        owner.(single.observe())(observer)
 
         owner.start()
         owner.stop()
@@ -75,7 +81,7 @@ class RxLifecycleHandlerSingleTest {
 
     @Test
     fun `in case of observe then start then stop then start again, single should has observer`() {
-        owner.(handler.observe(single::subscribe))(observer)
+        owner.(single.observe())(observer)
 
         owner.start()
         owner.stop()
@@ -86,7 +92,7 @@ class RxLifecycleHandlerSingleTest {
 
     @Test
     fun `in case of observe then start then destroy, single should not has observer`() {
-        owner.(handler.observe(single::subscribe))(observer)
+        owner.(single.observe())(observer)
 
         owner.start()
         owner.destroy()
@@ -96,7 +102,7 @@ class RxLifecycleHandlerSingleTest {
 
     @Test
     fun `in case of observe then start then destroy then start, which is impossible, single should not has observer`() {
-        owner.(handler.observe(single::subscribe))(observer)
+        owner.(single.observe())(observer)
 
         owner.start()
         owner.destroy()
@@ -109,7 +115,7 @@ class RxLifecycleHandlerSingleTest {
     fun `in case of destroy then observe, single should not has observer`() {
         owner.destroy()
 
-        owner.(handler.observe(single::subscribe))(observer)
+        owner.(single.observe())(observer)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -118,7 +124,7 @@ class RxLifecycleHandlerSingleTest {
     fun `in case of start then observe, single should has observer`() {
         owner.start()
 
-        owner.(handler.observe(single::subscribe))(observer)
+        owner.(single.observe())(observer)
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
@@ -128,7 +134,7 @@ class RxLifecycleHandlerSingleTest {
         owner.start()
         owner.stop()
 
-        owner.(handler.observe(single::subscribe))(observer)
+        owner.(single.observe())(observer)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -138,10 +144,207 @@ class RxLifecycleHandlerSingleTest {
         owner.start()
         owner.destroy()
 
-        owner.(handler.observe(single::subscribe))(observer)
+        owner.(single.observe())(observer)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
+    // end of region OBSERVE
+
+    // region OBSERVE ON NEXT
+    @Test
+    fun `in case of just observeOnNext, single should not has observer`() {
+        owner.(single.observeOnNext())(onNext)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of observeOnNext then start, single should has observer`() {
+        owner.(single.observeOnNext())(onNext)
+
+        owner.start()
+
+        assertThat(publisher.hasObservers(), `is`(true))
+    }
+
+    @Test
+    fun `in case of observeOnNext then start then stop, single should not has observer`() {
+        owner.(single.observeOnNext())(onNext)
+
+        owner.start()
+        owner.stop()
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of observeOnNext then start then stop then start again, single should has observer`() {
+        owner.(single.observeOnNext())(onNext)
+
+        owner.start()
+        owner.stop()
+        owner.start()
+
+        assertThat(publisher.hasObservers(), `is`(true))
+    }
+
+    @Test
+    fun `in case of observeOnNext then start then destroy, single should not has observer`() {
+        owner.(single.observeOnNext())(onNext)
+
+        owner.start()
+        owner.destroy()
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of observeOnNext then start then destroy then start, which is impossible, single should not has observer`() {
+        owner.(single.observeOnNext())(onNext)
+
+        owner.start()
+        owner.destroy()
+        owner.start()
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of destroy then observeOnNext, single should not has observer`() {
+        owner.destroy()
+
+        owner.(single.observeOnNext())(onNext)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of start then observeOnNext, single should has observer`() {
+        owner.start()
+
+        owner.(single.observeOnNext())(onNext)
+
+        assertThat(publisher.hasObservers(), `is`(true))
+    }
+
+    @Test
+    fun `in case of start then stop then observeOnNext, single should not has observer`() {
+        owner.start()
+        owner.stop()
+
+        owner.(single.observeOnNext())(onNext)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of start then destroy then observeOnNext, single should not has observer`() {
+        owner.start()
+        owner.destroy()
+
+        owner.(single.observeOnNext())(onNext)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+    // end of region OBSERVE ON NEXT
+
+    // region OBSERVE ON NEXT ON ERROR
+    @Test
+    fun `in case of just observeOnNextOnError, single should not has observer`() {
+        owner.(single.observeOnNextOnError())(onNext, onError)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of observeOnNextOnError then start, single should has observer`() {
+        owner.(single.observeOnNextOnError())(onNext, onError)
+
+        owner.start()
+
+        assertThat(publisher.hasObservers(), `is`(true))
+    }
+
+    @Test
+    fun `in case of observeOnNextOnError then start then stop, single should not has observer`() {
+        owner.(single.observeOnNextOnError())(onNext, onError)
+
+        owner.start()
+        owner.stop()
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of observeOnNextOnError then start then stop then start again, single should has observer`() {
+        owner.(single.observeOnNextOnError())(onNext, onError)
+
+        owner.start()
+        owner.stop()
+        owner.start()
+
+        assertThat(publisher.hasObservers(), `is`(true))
+    }
+
+    @Test
+    fun `in case of observeOnNextOnError then start then destroy, single should not has observer`() {
+        owner.(single.observeOnNextOnError())(onNext, onError)
+
+        owner.start()
+        owner.destroy()
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of observeOnNextOnError then start then destroy then start, which is impossible, single should not has observer`() {
+        owner.(single.observeOnNextOnError())(onNext, onError)
+
+        owner.start()
+        owner.destroy()
+        owner.start()
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of destroy then observeOnNextOnError, single should not has observer`() {
+        owner.destroy()
+
+        owner.(single.observeOnNextOnError())(onNext, onError)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of start then observeOnNextOnError, single should has observer`() {
+        owner.start()
+
+        owner.(single.observeOnNextOnError())(onNext, onError)
+
+        assertThat(publisher.hasObservers(), `is`(true))
+    }
+
+    @Test
+    fun `in case of start then stop then observeOnNextOnError, single should not has observer`() {
+        owner.start()
+        owner.stop()
+
+        owner.(single.observeOnNextOnError())(onNext, onError)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of start then destroy then observeOnNextOnError, single should not has observer`() {
+        owner.start()
+        owner.destroy()
+
+        owner.(single.observeOnNextOnError())(onNext, onError)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+    // end of region OBSERVE ON NEXT ON ERROR
 
     companion object {
         private const val ANY_STRING = "anyString"

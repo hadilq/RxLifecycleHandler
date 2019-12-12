@@ -16,6 +16,8 @@
 package com.github.hadilq.rxlifecyclehandler
 
 import io.reactivex.Maybe
+import io.reactivex.functions.Action
+import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 import org.hamcrest.core.Is.`is`
 import org.junit.Assert.assertThat
@@ -34,29 +36,37 @@ class RxLifecycleHandlerMaybeTest {
     @Mock
     private lateinit var observer: (String) -> Unit
 
+    @Mock
+    private lateinit var onNext: Consumer<String>
+
+    @Mock
+    private lateinit var onError: Consumer<Throwable>
+
+    @Mock
+    private lateinit var onComplete: Action
+
     private lateinit var publisher: PublishSubject<String>
     private lateinit var maybe: Maybe<String>
     private lateinit var owner: TestLifecycleOwner
-    private lateinit var handler: RxLifecycleHandlerMaybe<String>
 
     @Before
     fun setup() {
         owner = TestLifecycleOwner()
         publisher = PublishSubject.create<String>()
-        handler = RxLifecycleHandlerMaybe()
         maybe = publisher.firstElement()
     }
 
+    // region OBSERVE
     @Test
     fun `in case of just observe, maybe should not has observer`() {
-        owner.(handler.observe(maybe::subscribe))(observer)
+        owner.(maybe.observe())(observer)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
     fun `in case of observe then start, maybe should has observer`() {
-        owner.(handler.observe(maybe::subscribe))(observer)
+        owner.(maybe.observe())(observer)
 
         owner.start()
 
@@ -65,7 +75,7 @@ class RxLifecycleHandlerMaybeTest {
 
     @Test
     fun `in case of observe then start then stop, maybe should not has observer`() {
-        owner.(handler.observe(maybe::subscribe))(observer)
+        owner.(maybe.observe())(observer)
 
         owner.start()
         owner.stop()
@@ -75,7 +85,7 @@ class RxLifecycleHandlerMaybeTest {
 
     @Test
     fun `in case of observe then start then stop then start again, maybe should has observer`() {
-        owner.(handler.observe(maybe::subscribe))(observer)
+        owner.(maybe.observe())(observer)
 
         owner.start()
         owner.stop()
@@ -86,7 +96,7 @@ class RxLifecycleHandlerMaybeTest {
 
     @Test
     fun `in case of observe then start then destroy, maybe should not has observer`() {
-        owner.(handler.observe(maybe::subscribe))(observer)
+        owner.(maybe.observe())(observer)
 
         owner.start()
         owner.destroy()
@@ -96,7 +106,7 @@ class RxLifecycleHandlerMaybeTest {
 
     @Test
     fun `in case of observe then start then destroy then start, which is impossible, maybe should not has observer`() {
-        owner.(handler.observe(maybe::subscribe))(observer)
+        owner.(maybe.observe())(observer)
 
         owner.start()
         owner.destroy()
@@ -109,7 +119,7 @@ class RxLifecycleHandlerMaybeTest {
     fun `in case of destroy then observe, maybe should not has observer`() {
         owner.destroy()
 
-        owner.(handler.observe(maybe::subscribe))(observer)
+        owner.(maybe.observe())(observer)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -118,7 +128,7 @@ class RxLifecycleHandlerMaybeTest {
     fun `in case of start then observe, maybe should has observer`() {
         owner.start()
 
-        owner.(handler.observe(maybe::subscribe))(observer)
+        owner.(maybe.observe())(observer)
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
@@ -128,7 +138,7 @@ class RxLifecycleHandlerMaybeTest {
         owner.start()
         owner.stop()
 
-        owner.(handler.observe(maybe::subscribe))(observer)
+        owner.(maybe.observe())(observer)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -138,8 +148,304 @@ class RxLifecycleHandlerMaybeTest {
         owner.start()
         owner.destroy()
 
-        owner.(handler.observe(maybe::subscribe))(observer)
+        owner.(maybe.observe())(observer)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
+    // end of region OBSERVE
+
+    // region OBSERVE ON NEXT
+    @Test
+    fun `in case of just observeOnNext, maybe should not has observer`() {
+        owner.(maybe.observeOnNext())(onNext)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of observeOnNext then start, maybe should has observer`() {
+        owner.(maybe.observeOnNext())(onNext)
+
+        owner.start()
+
+        assertThat(publisher.hasObservers(), `is`(true))
+    }
+
+    @Test
+    fun `in case of observeOnNext then start then stop, maybe should not has observer`() {
+        owner.(maybe.observeOnNext())(onNext)
+
+        owner.start()
+        owner.stop()
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of observeOnNext then start then stop then start again, maybe should has observer`() {
+        owner.(maybe.observeOnNext())(onNext)
+
+        owner.start()
+        owner.stop()
+        owner.start()
+
+        assertThat(publisher.hasObservers(), `is`(true))
+    }
+
+    @Test
+    fun `in case of observeOnNext then start then destroy, maybe should not has observer`() {
+        owner.(maybe.observeOnNext())(onNext)
+
+        owner.start()
+        owner.destroy()
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of observeOnNext then start then destroy then start, which is impossible, maybe should not has observer`() {
+        owner.(maybe.observeOnNext())(onNext)
+
+        owner.start()
+        owner.destroy()
+        owner.start()
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of destroy then observeOnNext, maybe should not has observer`() {
+        owner.destroy()
+
+        owner.(maybe.observeOnNext())(onNext)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of start then observeOnNext, maybe should has observer`() {
+        owner.start()
+
+        owner.(maybe.observeOnNext())(onNext)
+
+        assertThat(publisher.hasObservers(), `is`(true))
+    }
+
+    @Test
+    fun `in case of start then stop then observeOnNext, maybe should not has observer`() {
+        owner.start()
+        owner.stop()
+
+        owner.(maybe.observeOnNext())(onNext)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of start then destroy then observeOnNext, maybe should not has observer`() {
+        owner.start()
+        owner.destroy()
+
+        owner.(maybe.observeOnNext())(onNext)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+    // end of region OBSERVE ON NEXT
+
+    // region OBSERVE ON NEXT ON ERROR
+    @Test
+    fun `in case of just observeOnNextOnError, maybe should not has observer`() {
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of observeOnNextOnError then start, maybe should has observer`() {
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
+
+        owner.start()
+
+        assertThat(publisher.hasObservers(), `is`(true))
+    }
+
+    @Test
+    fun `in case of observeOnNextOnError then start then stop, maybe should not has observer`() {
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
+
+        owner.start()
+        owner.stop()
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of observeOnNextOnError then start then stop then start again, maybe should has observer`() {
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
+
+        owner.start()
+        owner.stop()
+        owner.start()
+
+        assertThat(publisher.hasObservers(), `is`(true))
+    }
+
+    @Test
+    fun `in case of observeOnNextOnError then start then destroy, maybe should not has observer`() {
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
+
+        owner.start()
+        owner.destroy()
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of observeOnNextOnError then start then destroy then start, which is impossible, maybe should not has observer`() {
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
+
+        owner.start()
+        owner.destroy()
+        owner.start()
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of destroy then observeOnNextOnError, maybe should not has observer`() {
+        owner.destroy()
+
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of start then observeOnNextOnError, maybe should has observer`() {
+        owner.start()
+
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
+
+        assertThat(publisher.hasObservers(), `is`(true))
+    }
+
+    @Test
+    fun `in case of start then stop then observeOnNextOnError, maybe should not has observer`() {
+        owner.start()
+        owner.stop()
+
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of start then destroy then observeOnNextOnError, maybe should not has observer`() {
+        owner.start()
+        owner.destroy()
+
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+    // end of region OBSERVE ON NEXT ON ERROR
+
+    // region OBSERVE ON NEXT ON COMPLETE
+    @Test
+    fun `in case of just observeOnNextOnErrorOnComplete, maybe should not has observer`() {
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of observeOnNextOnErrorOnComplete then start, maybe should has observer`() {
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+
+        owner.start()
+
+        assertThat(publisher.hasObservers(), `is`(true))
+    }
+
+    @Test
+    fun `in case of observeOnNextOnErrorOnComplete then start then stop, maybe should not has observer`() {
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+
+        owner.start()
+        owner.stop()
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of observeOnNextOnErrorOnComplete then start then stop then start again, maybe should has observer`() {
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+
+        owner.start()
+        owner.stop()
+        owner.start()
+
+        assertThat(publisher.hasObservers(), `is`(true))
+    }
+
+    @Test
+    fun `in case of observeOnNextOnErrorOnComplete then start then destroy, maybe should not has observer`() {
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+
+        owner.start()
+        owner.destroy()
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of observeOnNextOnErrorOnComplete then start then destroy then start, which is impossible, maybe should not has observer`() {
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+
+        owner.start()
+        owner.destroy()
+        owner.start()
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of destroy then observeOnNextOnErrorOnComplete, maybe should not has observer`() {
+        owner.destroy()
+
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of start then observeOnNextOnErrorOnComplete, maybe should has observer`() {
+        owner.start()
+
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+
+        assertThat(publisher.hasObservers(), `is`(true))
+    }
+
+    @Test
+    fun `in case of start then stop then observeOnNextOnErrorOnComplete, maybe should not has observer`() {
+        owner.start()
+        owner.stop()
+
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+
+    @Test
+    fun `in case of start then destroy then observeOnNextOnErrorOnComplete, maybe should not has observer`() {
+        owner.start()
+        owner.destroy()
+
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+
+        assertThat(publisher.hasObservers(), `is`(false))
+    }
+    // end of region OBSERVE ON NEXT ON COMPLETE
+
 }
