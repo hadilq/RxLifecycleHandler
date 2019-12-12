@@ -1,36 +1,34 @@
-  version: 2.1
-  orbs:
-    codecov: codecov/codecov@1.0.5
-  jobs:
-    build:
-      docker:
-        - image: circleci/android:api-29
-      working_directory: ~/code
+version: 2.1
+orbs:
+  codecov: codecov/codecov@1.0.5
+jobs:
+  build:
+    docker:
+      - image: circleci/android:api-29
+    working_directory: ~/code
 
-      environment:
-        _JAVA_OPTIONS: "-Xms512m -Xmx1024m"
-        GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.parallel=false"
+    environment:
+      _JAVA_OPTIONS: "-Xms512m -Xmx1024m"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.parallel=false"
 
-      steps:
-        - checkout
-        - restore_cache:
-            keys:
-              - v1-dependencies-{{ checksum "build.gradle" }}
-              - v1-dependencies-
-        - run:
-            name: Download Dependencies
-            command: ./gradlew androidDependencies
+    steps:
+      - checkout
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle.kts" }}-{{ checksum "app/build.gradle.kts" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
 
-        - save_cache:
-            paths:
-              - ~/.gradle
-            key: v1-dependencies-{{ checksum "build.gradle.kts" }}
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle.kts" }}-{{ checksum "app/build.gradle.kts" }}
 
-        - run:
-            name: Run all checks
-            command: ./gradlew check
-        - run:
-            name: Run Jacoco
-            command: ./gradlew jacocoTestReport
-        - codecov/upload:
-            file: code/lib/build/reports/jacoco/jacocoTestDebugUnitTestReport
+      - run:
+          name: Run all checks
+          command: ./gradlew check
+      - run:
+          name: Run Jacoco
+          command: ./gradlew jacocoTestReport
+      - codecov/upload:
+          file: code/lib/build/reports/jacoco/jacocoTestDebugUnitTestReport
