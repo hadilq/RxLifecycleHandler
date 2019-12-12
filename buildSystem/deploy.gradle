@@ -44,8 +44,8 @@ uploadArchives {
                 name 'RxLifecycleHandler'
                 packaging 'aar'
                 // optionally artifactId can be defined here
-                description 'This library is an advancement to the Google\'s version of MVVM architectural pattern ' +
-                        'by using RxJava Subject and Processor instead of ordinary LiveData.'
+                description 'This library is a glue between the lifecycle of `androidx.lifecycle:lifecycle-extensions` and \n' +
+                        '`io.reactivex.rxjava2:rxjava` libraries.'
                 url 'https://github.com/hadilq/RxLifecycleHandler'
 
                 scm {
