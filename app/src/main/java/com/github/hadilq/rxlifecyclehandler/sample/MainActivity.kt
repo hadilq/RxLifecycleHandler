@@ -48,6 +48,6 @@ class MainActivity : ComponentActivity() {
         (single.observe())(::handleString)
     }
 
-    private fun handleString(s: String) {
+    private fun handleString(@Suppress("UNUSED_PARAMETER") s: String) {
     }
 }

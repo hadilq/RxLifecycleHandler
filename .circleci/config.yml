@@ -31,4 +31,4 @@ jobs:
           name: Run Jacoco
           command: ./gradlew jacocoTestReport
       - codecov/upload:
-          file: lib/build/jacoco/testDebugUnitTest.exec
+          file: lib/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
