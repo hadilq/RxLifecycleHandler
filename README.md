@@ -1,3 +1,4 @@
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rxlifecyclehandler/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rxlifecyclehandler)
 
 Rx Lifecycle Handler
 ---
@@ -39,6 +40,14 @@ class MainActivity : ComponentActivity() {
 ```
 
 Enjoy!
+
+Download
+---
+Download via gradle
+```groovy
+implementation "com.github.hadilq:rxlifecyclehandler:$libVersion"
+```
+where the `libVersion` is [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rxlifecyclehandler/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rxlifecyclehandler).
 
 Contribution
 ---
