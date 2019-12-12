@@ -1,4 +1,5 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rxlifecyclehandler/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rxlifecyclehandler)
+[![CircleCI](https://circleci.com/gh/hadilq/RxLifecycleHandler.svg?style=svg)](https://circleci.com/gh/hadilq/RxLifecycleHandler)
 
 Rx Lifecycle Handler
 ---
