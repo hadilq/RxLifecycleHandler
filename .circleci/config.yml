@@ -33,4 +33,4 @@
             name: Run Jacoco
             command: ./gradlew jacocoTestReport
         - codecov/upload:
-            file: lib/build/reports/jacoco/jacocoTestDebugUnitTestReport
+            file: code/lib/build/reports/jacoco/jacocoTestDebugUnitTestReport
