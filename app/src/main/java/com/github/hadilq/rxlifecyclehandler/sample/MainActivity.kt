@@ -18,6 +18,10 @@ package com.github.hadilq.rxlifecyclehandler.sample
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import com.github.hadilq.rxlifecyclehandler.observe
+import io.reactivex.Flowable
+import io.reactivex.Maybe
+import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.processors.PublishProcessor
 
 class MainActivity : ComponentActivity() {
@@ -26,12 +30,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-        val flowable = PublishProcessor.create<String>().hide()
+        val flowable: Flowable<String> = PublishProcessor.create<String>().hide()
+        val maybe: Maybe<String> = flowable.firstElement()
+        val observable: Observable<String> = flowable.toObservable()
+        val single: Single<String> = flowable.single("single")
 
+        // Flowable usage
         (flowable.observe())(::handleString)
-        (flowable.firstElement().observe())(::handleString)
-        (flowable.toObservable().observe())(::handleString)
-        (flowable.first("single").observe())(::handleString)
+
+        // Maybe usage
+        (maybe.observe())(::handleString)
+
+        // Observable usage
+        (observable.observe())(::handleString)
+
+        // Single usage
+        (single.observe())(::handleString)
     }
 
     private fun handleString(s: String) {
