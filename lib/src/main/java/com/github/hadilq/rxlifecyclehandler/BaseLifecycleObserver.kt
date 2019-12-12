@@ -84,8 +84,12 @@ internal abstract class BaseLifecycleObserver<T> : LifecycleObserver {
     private fun LifecycleOwner.observeEntry(entry: Entry<T>) {
         this@BaseLifecycleObserver.entry = entry
         this@BaseLifecycleObserver.owner = this
+        registerIfPossible()
+    }
+
+    private fun registerIfPossible() {
         if (lifecycle.currentState != Lifecycle.State.DESTROYED) {
-            owner.lifecycle.addObserver(this@BaseLifecycleObserver)
+            lifecycle.addObserver(this)
             observeIfPossible()
         }
     }
