@@ -24,6 +24,10 @@ import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
 import org.reactivestreams.Subscription
 
+/***
+ * The base class of handlers, which glue both libraries. Notice here we assume the [LifecycleOwner]
+ * just needs the emitted values of upstream just between [onStart] and [onStop] events.
+ */
 internal abstract class BaseLifecycleObserver<T> : LifecycleObserver {
     private val lifecycle by lazy { owner.lifecycle }
     private var disposable: Disposable? = null
