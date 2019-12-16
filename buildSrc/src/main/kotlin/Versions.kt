@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 object Versions {
-    const val kotlin = "1.3.41"
+    const val kotlin = "1.3.61"
     const val dokka = "0.10.0"
     const val jacoco = "0.1.4"
 
