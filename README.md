@@ -9,6 +9,8 @@ This library is a glue between the lifecycle of `androidx.lifecycle:lifecycle-ex
 `start` and `stop` of `LifecycleOwner`, so on other moments this library would unsubscribe 
 from the upstream of `RxJava`, so called `Observable`, `Flowable`, `Maybe`, and `Single`.
 
+Also you can find its tween library for Kotlin Coroutines in https://github.com/hadilq/CoroutineLifecycleHandler/.
+
 Usage
 ---
 This source has a sample app, which doesn't do anything, where you can find the usage in `MainActivity`.
