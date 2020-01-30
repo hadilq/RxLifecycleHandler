@@ -43,12 +43,13 @@ dependencies {
     kapt Depends.lifecycleCompiler
 
     implementation Depends.kotlin
-    implementation Depends.lifecycle
+    api Depends.lifecycle
     implementation Depends.rxJava
     implementation Depends.rxAndroid
 
     testImplementation Depends.junit
     testImplementation Depends.mockito
+    testImplementation Depends.robolectric
 }
 
 if (project.hasProperty("signing.keyId")) {

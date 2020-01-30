@@ -16,11 +16,12 @@
 object Depends {
     const val kotlin = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}"
     const val appCompat = "androidx.appcompat:appcompat:${Versions.appCompat}"
-    const val lifecycle = "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycle}"
+    const val lifecycle = "com.github.hadilq:androidlifecyclehandler:${Versions.androidlifecyclehandler}"
     const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:${Versions.lifecycle}"
     const val rxJava = "io.reactivex.rxjava2:rxjava:${Versions.rx}"
     const val rxAndroid = "io.reactivex.rxjava2:rxandroid:${Versions.rxAndroid}"
 
     const val junit = "junit:junit:${Versions.junit}"
     const val mockito = "com.nhaarman:mockito-kotlin:${Versions.mockito}"
+    const val robolectric = "org.robolectric:robolectric:${Versions.robolectric}"
 }

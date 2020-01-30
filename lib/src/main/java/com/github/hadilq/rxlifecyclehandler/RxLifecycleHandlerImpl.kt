@@ -15,7 +15,6 @@
  */
 package com.github.hadilq.rxlifecyclehandler
 
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.hadilq.androidlifecyclehandler.AndroidLifecycleHandler
 import com.github.hadilq.androidlifecyclehandler.LifeSpan
@@ -26,34 +25,31 @@ import io.reactivex.functions.Consumer
 import org.reactivestreams.Subscription
 
 /***
- * The base class of handlers, which glue both libraries. Notice here we assume the [LifecycleOwner]
- * needs the emitted values of upstream just between [onStart] and [onStop] events.
+ * An implementation of [RxLifecycleHandler].
  */
-internal abstract class BaseLifecycleObserver<T>(private val handler: AndroidLifecycleHandler) :
-    LifecycleObserver {
+class RxLifecycleHandlerImpl<T>(private val handler: AndroidLifecycleHandler) :
+    RxLifecycleHandler<T> {
 
-    private lateinit var entry: Entry<T>
-
-    fun observe(
+    override fun observe(
         subscribe: (Consumer<T>) -> Disposable
     ): LifecycleOwner.((T) -> Unit) -> Unit = { observer: (T) -> Unit ->
         observeEntry(ObserveEntry(observer, subscribe))
     }
 
-    fun observeOnNext(
+    override fun observeOnNext(
         subscribe: (Consumer<T>) -> Disposable
     ): LifecycleOwner.(Consumer<T>) -> Unit = { onNext: Consumer<T> ->
         observeEntry(OnNextEntry(onNext, subscribe))
     }
 
-    fun observeOnNextOnError(
+    override fun observeOnNextOnError(
         subscribe: (Consumer<T>, Consumer<Throwable>) -> Disposable
     ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
         { onNext: Consumer<T>, onError: Consumer<Throwable> ->
             observeEntry(OnNextOnErrorEntry(onNext, onError, subscribe))
         }
 
-    fun observeOnNextOnErrorOnComplete(
+    override fun observeOnNextOnErrorOnComplete(
         subscribe: (Consumer<T>, Consumer<Throwable>, Action) -> Disposable
     ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit =
         { onNext: Consumer<T>,
@@ -62,8 +58,13 @@ internal abstract class BaseLifecycleObserver<T>(private val handler: AndroidLif
             observeEntry(OnNextOnErrorOnCompleteEntry(onNext, onError, onComplete, subscribe))
         }
 
-    fun observeOnNextOnErrorOnCompleteOnSubscribe(
-        subscribe: (Consumer<T>, Consumer<Throwable>, Action, Consumer<Subscription>) -> Disposable
+    override fun observeOnNextOnErrorOnCompleteOnSubscribe(
+        subscribe: (
+            Consumer<T>,
+            Consumer<Throwable>,
+            Action,
+            Consumer<Subscription>
+        ) -> Disposable
     ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action, Consumer<Subscription>) -> Unit =
         { onNext: Consumer<T>,
           onError: Consumer<Throwable>,
@@ -80,7 +81,7 @@ internal abstract class BaseLifecycleObserver<T>(private val handler: AndroidLif
             )
         }
 
-    fun observeOnNextOnErrorOnCompleteOnDisposable(
+    override fun observeOnNextOnErrorOnCompleteOnDisposable(
         subscribe: (Consumer<T>, Consumer<Throwable>, Action, Consumer<Disposable>) -> Disposable
     ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action, Consumer<Disposable>) -> Unit =
         { onNext: Consumer<T>,
