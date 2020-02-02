@@ -40,7 +40,7 @@ import org.reactivestreams.Subscription
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (flowable.observe())(::handleString)
+ *       (flowable.observe(extendedLife, KEY))(::handleString)
  *   }
  * }
  *
@@ -69,7 +69,7 @@ fun <T> Flowable<T>.observe(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (flowable.observeOnNext())(Consumer(::handleString))
+ *       (flowable.observeOnNext(extendedLife, KEY))(Consumer(::handleString))
  *   }
  * }
  *
@@ -98,7 +98,7 @@ fun <T> Flowable<T>.observeOnNext(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (flowable.observeOnNextOnError())(Consumer(::handleString), Consumer(::handleError))
+ *       (flowable.observeOnNextOnError(extendedLife, KEY))(Consumer(::handleString), Consumer(::handleError))
  *   }
  * }
  *
@@ -128,7 +128,7 @@ fun <T> Flowable<T>.observeOnNextOnError(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (flowable.observeOnNextOnErrorOnComplete())(
+ *       (flowable.observeOnNextOnErrorOnComplete(extendedLife, KEY))(
  *           Consumer(::handleString),
  *           Consumer(::handleError),
  *           Action(::handleComplete)
@@ -162,7 +162,7 @@ fun <T> Flowable<T>.observeOnNextOnErrorOnComplete(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (flowable.observeOnNextOnErrorOnCompleteOnSubscribe())(
+ *       (flowable.observeOnNextOnErrorOnCompleteOnSubscribe(extendedLife, KEY))(
  *           Consumer(::handleString),
  *           Consumer(::handleError),
  *           Action(::handleComplete),
@@ -197,7 +197,7 @@ fun <T> Flowable<T>.observeOnNextOnErrorOnCompleteOnSubscribe(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (maybe.observe())(::handleString)
+ *       (maybe.observe(extendedLife, KEY))(::handleString)
  *   }
  * }
  *
@@ -226,7 +226,7 @@ fun <T> Maybe<T>.observe(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (maybe.observeOnNext())(Consumer(::handleString))
+ *       (maybe.observeOnNext(extendedLife, KEY))(Consumer(::handleString))
  *   }
  * }
  *
@@ -255,7 +255,7 @@ fun <T> Maybe<T>.observeOnNext(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (maybe.observeOnNextOnError())(Consumer(::handleString), Consumer(::handleError))
+ *       (maybe.observeOnNextOnError(extendedLife, KEY))(Consumer(::handleString), Consumer(::handleError))
  *   }
  * }
  *
@@ -285,7 +285,7 @@ fun <T> Maybe<T>.observeOnNextOnError(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (maybe.observeOnNextOnErrorOnComplete())(
+ *       (maybe.observeOnNextOnErrorOnComplete(extendedLife, KEY))(
  *           Consumer(::handleString),
  *           Consumer(::handleError),
  *           Action(::handleComplete)
@@ -319,7 +319,7 @@ fun <T> Maybe<T>.observeOnNextOnErrorOnComplete(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (observable.observe())(::handleString)
+ *       (observable.observe(extendedLife, KEY))(::handleString)
  *   }
  * }
  *
@@ -348,7 +348,7 @@ fun <T> Observable<T>.observe(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (observable.observeOnNext())(Consumer(::handleString))
+ *       (observable.observeOnNext(extendedLife, KEY))(Consumer(::handleString))
  *   }
  * }
  *
@@ -377,7 +377,7 @@ fun <T> Observable<T>.observeOnNext(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (observable.observeOnNextOnError())(Consumer(::handleString), Consumer(::handleError))
+ *       (observable.observeOnNextOnError(extendedLife, KEY))(Consumer(::handleString), Consumer(::handleError))
  *   }
  * }
  *
@@ -407,7 +407,7 @@ fun <T> Observable<T>.observeOnNextOnError(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (observable.observeOnNextOnErrorOnComplete())(
+ *       (observable.observeOnNextOnErrorOnComplete(extendedLife, KEY))(
  *           Consumer(::handleString),
  *           Consumer(::handleError),
  *           Action(::handleComplete)
@@ -441,7 +441,7 @@ fun <T> Observable<T>.observeOnNextOnErrorOnComplete(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (observable.observeOnNextOnErrorOnCompleteOnSubscribe())(
+ *       (observable.observeOnNextOnErrorOnCompleteOnSubscribe(extendedLife, KEY))(
  *           Consumer(::handleString),
  *           Consumer(::handleError),
  *           Action(::handleComplete),
@@ -476,7 +476,7 @@ fun <T> Observable<T>.observeOnNextOnErrorOnCompleteOnSubscribe(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (single.observe())(::handleString)
+ *       (single.observe(extendedLife, KEY))(::handleString)
  *   }
  * }
  *
@@ -505,7 +505,7 @@ fun <T> Single<T>.observe(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (single.observeOnNext())(Consumer(::handleString))
+ *       (single.observeOnNext(extendedLife, KEY))(Consumer(::handleString))
  *   }
  * }
  *
@@ -534,7 +534,7 @@ fun <T> Single<T>.observeOnNext(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (single.observeOnNextOnError())(Consumer(::handleString), Consumer(::handleError))
+ *       (single.observeOnNextOnError(extendedLife, KEY))(Consumer(::handleString), Consumer(::handleError))
  *   }
  * }
  *
@@ -559,6 +559,19 @@ fun <T> Single<T>.observeOnNextOnError(
  * To wrap up the [Subject] and hide it from the [SavedStateRegistryOwner], which is an
  * Activity or a Fragment.
  *
+ * Example of use:
+ * ```
+ * class MyViewModel : ViewModel() {
+ *
+ *   private val extendedPublisher = BehaviorSubject.create<String>().apply { onNext("Test") }
+ *   val extendedStringEmitter = extendedPublisher.toExtendedLifecycleAware(KEY)
+ *
+ *   companion object {
+ *       private const val KEY = "string_emitter"
+ *   }
+ * }
+ * ```
+ *
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] to help you with dependency inversion principle.
  */
@@ -572,6 +585,19 @@ inline fun <reified T : Any> Subject<T>.toExtendedLifecycleAware(
 /***
  * To wrap up the [FlowableProcessor] and hide it from the [SavedStateRegistryOwner], which is an
  * Activity or a Fragment.
+ *
+ * Example of use:
+ * ```
+ * class MyViewModel : ViewModel() {
+ *
+ *   private val extendedPublisher = BehaviorProcessor.create<String>().apply { onNext("Test") }
+ *   val extendedStringEmitter = extendedPublisher.toExtendedLifecycleAware(KEY)
+ *
+ *   companion object {
+ *       private const val KEY = "string_emitter"
+ *   }
+ * }
+ * ```
  *
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] to help you with dependency inversion principle.

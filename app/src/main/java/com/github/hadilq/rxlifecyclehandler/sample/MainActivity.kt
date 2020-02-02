@@ -17,6 +17,7 @@ package com.github.hadilq.rxlifecyclehandler.sample
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import com.github.hadilq.androidlifecyclehandler.ExtendedLife
 import com.github.hadilq.rxlifecyclehandler.observe
 import io.reactivex.Flowable
 import io.reactivex.Maybe
@@ -25,6 +26,13 @@ import io.reactivex.Single
 import io.reactivex.processors.PublishProcessor
 
 class MainActivity : ComponentActivity() {
+
+    private val life = object : ExtendedLife {
+        override fun onBorn(bundle: Bundle?) {
+        }
+
+        override fun onDie(): Bundle = Bundle()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +54,24 @@ class MainActivity : ComponentActivity() {
 
         // Single usage
         (single.observe())(::handleString)
+
+        // Flowable usage
+        (flowable.observe(life, KEY))(::handleString)
+
+        // Maybe usage
+        (maybe.observe(life, KEY))(::handleString)
+
+        // Observable usage
+        (observable.observe(life, KEY))(::handleString)
+
+        // Single usage
+        (single.observe(life, KEY))(::handleString)
     }
 
     private fun handleString(@Suppress("UNUSED_PARAMETER") s: String) {
+    }
+
+    companion object {
+        private const val KEY = "key_to_save_the_data"
     }
 }

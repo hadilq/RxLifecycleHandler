@@ -41,6 +41,7 @@ dependencies {
     implementation(Depends.kotlin)
     implementation(Depends.appCompat)
     implementation(Depends.lifecycle)
+    implementation(Depends.viewModle)
     implementation(Depends.rxJava)
     implementation(Depends.rxAndroid)
 }

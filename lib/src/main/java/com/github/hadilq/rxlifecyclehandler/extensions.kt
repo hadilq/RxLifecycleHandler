@@ -456,6 +456,15 @@ fun <T> Single<T>.observeOnNextOnError(
  * To wrap up the [Subject] and hide it from the [LifecycleOwner], which is an
  * Activity or a Fragment.
  *
+ * Example of use:
+ * ```
+ * class MyViewModel : ViewModel() {
+ *
+ *   private val publisher = PublishSubject.create<String>()
+ *   val stringEmitter = publisher.toLifecycleAware()
+ * }
+ * ```
+ *
  * The [handler] to help you with dependency inversion principle.
  */
 fun <T : Any> Subject<T>.toLifecycleAware(
@@ -467,6 +476,15 @@ fun <T : Any> Subject<T>.toLifecycleAware(
 /***
  * To wrap up the [FlowableProcessor] and hide it from the [LifecycleOwner], which is an
  * Activity or a Fragment.
+ *
+ * Example of use:
+ * ```
+ * class MyViewModel : ViewModel() {
+ *
+ *   private val publisher = PublishProcessor.create<String>()
+ *   val stringEmitter = publisher.toLifecycleAware()
+ * }
+ * ```
  *
  * The [handler] to help you with dependency inversion principle.
  */

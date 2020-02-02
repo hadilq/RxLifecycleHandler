@@ -22,6 +22,19 @@ import io.reactivex.subjects.Subject
 /***
  * Uses for hiding [Subject] or [FlowableProcessor] from [LifecycleOwner] and prepare it
  * for observation by [LifecycleOwner].
+ *
+ * Example of use:
+ * ```
+ * class MyAndroidActivity : ComponentActivity {
+ *
+ *   override fun onCreate(savedInstanceState: Bundle?) {
+ *
+ *       (viewModel.stringEmitter.observe()) { testString ->
+ *           assert(testString == "Test")
+ *       }
+ *   }
+ * }
+ * ```
  */
 interface LifecycleAware<T> {
 

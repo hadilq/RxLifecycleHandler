@@ -23,6 +23,19 @@ import io.reactivex.subjects.Subject
 /***
  * Uses for hiding [Subject] or [FlowableProcessor] from [SavedStateRegistryOwner] and prepare it
  * for observation by [SavedStateRegistryOwner].
+ *
+ * Example of use:
+ * ```
+ * class MyAndroidActivity : ComponentActivity {
+ *
+ *   override fun onCreate(savedInstanceState: Bundle?) {
+ *
+ *       (viewModel.extendedStringEmitter.observe()) { testString ->
+ *           assert(testString == "Test")
+ *       }
+ *   }
+ * }
+ * ```
  */
 interface ExtendedLifecycleAware<T> : ExtendedLife {
 

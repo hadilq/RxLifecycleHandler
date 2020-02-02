@@ -18,6 +18,7 @@ object Depends {
     const val appCompat = "androidx.appcompat:appcompat:${Versions.appCompat}"
     const val lifecycle = "com.github.hadilq:androidlifecyclehandler:${Versions.androidlifecyclehandler}"
     const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:${Versions.lifecycle}"
+    const val viewModle = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycle}"
     const val rxJava = "io.reactivex.rxjava2:rxjava:${Versions.rx}"
     const val rxAndroid = "io.reactivex.rxjava2:rxandroid:${Versions.rxAndroid}"
 
