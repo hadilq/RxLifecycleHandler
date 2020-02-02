@@ -567,7 +567,7 @@ fun <T> Single<T>.observeOnNextOnError(
  *   val extendedStringEmitter = extendedPublisher.toExtendedLifecycleAware(KEY)
  *
  *   companion object {
- *       private const val KEY = "string_emitter"
+ *       private const val KEY = "key_to_save_string_emitter"
  *   }
  * }
  * ```
@@ -594,7 +594,7 @@ inline fun <reified T : Any> Subject<T>.toExtendedLifecycleAware(
  *   val extendedStringEmitter = extendedPublisher.toExtendedLifecycleAware(KEY)
  *
  *   companion object {
- *       private const val KEY = "string_emitter"
+ *       private const val KEY = "key_to_save_string_emitter"
  *   }
  * }
  * ```

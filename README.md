@@ -9,7 +9,7 @@ This library is a glue between the lifecycle of `androidx.lifecycle:lifecycle-ex
 `start` and `stop` of `LifecycleOwner`, so on other moments this library would unsubscribe 
 from the upstream of `RxJava`, so called `Observable`, `Flowable`, `Maybe`, and `Single`. Also,
 we support a more general assumption that we want the emitted values after `start` and before
- `stop` or `saveState`, depends which gets called sooner, of `SavedStateRegistryOwner`.
+ `stop` or `saveState` of `SavedStateRegistryOwner`, depends which one gets called sooner.
 
 Also you can find its tween library for Kotlin Coroutines in https://github.com/hadilq/CoroutineLifecycleHandler/.
 
@@ -17,8 +17,9 @@ Usage
 ---
 This source has a sample app, which doesn't do anything, where you can find the usage in `MainActivity`
 and `MainViewModelActivity`. However, in `MVVM` or `MVI` architectural patterns, you can use it
-based on the value you want to save in `onSaveInstanceState` or not. If the data, you want to
-propagate is an action, then you probably don't want to save it so in `ViewModel` you have.
+based on the data you want to save in `onSaveInstanceState` or not. For now let's restrict
+ourselves to `MVVM`. If the data you want to propagate is an action, then you probably don't want
+to save it so in `ViewModel` you have.
 ```kotlin
 class MainViewModel : ViewModel() {
 
@@ -74,10 +75,11 @@ class MyViewModelActivity : ComponentActivity() {
     }
 }
 ```
-Here, you may noticed the extra parentheses above, or you noticed that we didn't passe the
+Here, you may noticed the extra parentheses above, or you may noticed that we didn't passe the
 `Activity` or `Fragment` to the `observe` method. In both cases, read the last sentence again!
 Because they're related to each other, which means in this library we preferred to avoid writing
-`this` to pass the `Activity` or `Fragment` in trade off of having odd position of parentheses.
+`this` to pass the `Activity` or `Fragment` directly in trade off of having odd position of parentheses.
+
 Any way, in case you want to use this library out of `MVVM` architectural pattern, you can use it
  as follows.
 ```kotlin
