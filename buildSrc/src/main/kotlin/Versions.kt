@@ -26,7 +26,7 @@ object Versions {
 
     const val groupId = "com.github.hadilq"
     const val artifactId = "rxlifecyclehandler"
-    const val libVersion = "0.1.0"
+    const val libVersion = "0.2.0"
 
     //Libraries
     const val lifecycle = "2.2.0-rc02"
