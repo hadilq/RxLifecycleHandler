@@ -291,6 +291,24 @@ class SubjectExtendedLifecycleAwareImplTest {
         `test saving` { getIntegerArrayList(AbsExtendedLifecycleAware.KEY)!! }
     }
 
+    @Test
+    fun `In case of born of UnsupportedData LifecycleAware, load`() {
+        try {
+            `test loading`(UnsupportedData(false)) { }
+            throw AssertionError("An exception must be thrown")
+        } catch (e: IllegalArgumentException) {
+        }
+    }
+
+    @Test
+    fun `In case of die of UnsupportedData LifecycleAware, save the cache`() {
+        try {
+            `test saving`(UnsupportedData(false)) { UnsupportedData(false) }
+            throw AssertionError("An exception must be thrown")
+        } catch (e: IllegalArgumentException) {
+        }
+    }
+
     private inline fun <reified T : Any> `test loading`(
         value: T = mock(),
         supportAutoBoxing: Boolean = false,
@@ -353,6 +371,7 @@ class SubjectExtendedLifecycleAwareImplTest {
         verify(handler).observe(any(), any(), eq(KEY))
     }
 
+    data class UnsupportedData(val unknown: Boolean)
     companion object {
         private const val KEY = "EXTENDED_LIFECYCLE_AWARE_TEST_KEY"
     }
