@@ -16,7 +16,7 @@
 package com.github.hadilq.rxlifecyclehandler
 
 import androidx.savedstate.SavedStateRegistryOwner
-import com.github.hadilq.androidlifecyclehandler.ExtendedLife
+import com.github.hadilq.androidlifecyclehandler.ELife
 import io.reactivex.processors.FlowableProcessor
 import io.reactivex.subjects.Subject
 
@@ -37,7 +37,7 @@ import io.reactivex.subjects.Subject
  * }
  * ```
  */
-interface ExtendedLifecycleAware<T> : ExtendedLife {
+interface ExtendedLifecycleAware<T> : ELife {
 
     /**
      * Observe the wrapped up [Subject] or [FlowableProcessor].

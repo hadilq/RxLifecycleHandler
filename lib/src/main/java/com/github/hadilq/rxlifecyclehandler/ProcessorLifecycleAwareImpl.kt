@@ -23,7 +23,7 @@ import io.reactivex.processors.FlowableProcessor
  */
 class ProcessorLifecycleAwareImpl<T : Any>(
     private val processor: FlowableProcessor<T>,
-    private val handler: RxLifecycleHandler<T>
+    private val handler: RxLifeHandler<T>
 ) : LifecycleAware<T> {
 
     override fun observe(): LifecycleOwner.((T) -> Unit) -> Unit =

@@ -15,7 +15,6 @@
  */
 package com.github.hadilq.rxlifecyclehandler
 
-import com.github.hadilq.androidlifecyclehandler.ExtendedLife
 import io.reactivex.Maybe
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
@@ -29,7 +28,7 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 
-class RxExtendedLifecycleHandlerMaybeTest {
+class RxLifeHandlerMaybeTest {
 
     @get:Rule
     val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -46,16 +45,13 @@ class RxExtendedLifecycleHandlerMaybeTest {
     @Mock
     private lateinit var onComplete: Action
 
-    @Mock
-    private lateinit var life: ExtendedLife
-
     private lateinit var publisher: PublishSubject<String>
     private lateinit var maybe: Maybe<String>
-    private lateinit var owner: TestSavedStateRegistryOwner
+    private lateinit var owner: TestLifecycleOwner
 
     @Before
     fun setup() {
-        owner = TestSavedStateRegistryOwner()
+        owner = TestLifecycleOwner()
         publisher = PublishSubject.create<String>()
         maybe = publisher.firstElement()
     }
@@ -63,26 +59,24 @@ class RxExtendedLifecycleHandlerMaybeTest {
     // region OBSERVE
     @Test
     fun `in case of just observe, maybe should not has observer`() {
-        owner.(maybe.observe(life))(observer)
+        owner.(maybe.observe())(observer)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
-    fun `in case of observe then create then start, maybe should has observer`() {
-        owner.(maybe.observe(life))(observer)
+    fun `in case of observe then start, maybe should has observer`() {
+        owner.(maybe.observe())(observer)
 
-        owner.create()
         owner.start()
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
 
     @Test
-    fun `in case of observe then create then start then stop, maybe should not has observer`() {
-        owner.(maybe.observe(life))(observer)
+    fun `in case of observe then start then stop, maybe should not has observer`() {
+        owner.(maybe.observe())(observer)
 
-        owner.create()
         owner.start()
         owner.stop()
 
@@ -90,10 +84,9 @@ class RxExtendedLifecycleHandlerMaybeTest {
     }
 
     @Test
-    fun `in case of observe then create then start then stop then start again, maybe should has observer`() {
-        owner.(maybe.observe(life))(observer)
+    fun `in case of observe then start then stop then start again, maybe should has observer`() {
+        owner.(maybe.observe())(observer)
 
-        owner.create()
         owner.start()
         owner.stop()
         owner.start()
@@ -102,10 +95,9 @@ class RxExtendedLifecycleHandlerMaybeTest {
     }
 
     @Test
-    fun `in case of observe then create then start then destroy, maybe should not has observer`() {
-        owner.(maybe.observe(life))(observer)
+    fun `in case of observe then start then destroy, maybe should not has observer`() {
+        owner.(maybe.observe())(observer)
 
-        owner.create()
         owner.start()
         owner.destroy()
 
@@ -113,10 +105,9 @@ class RxExtendedLifecycleHandlerMaybeTest {
     }
 
     @Test
-    fun `in case of observe then create then start then destroy then start, which is impossible, maybe should not has observer`() {
-        owner.(maybe.observe(life))(observer)
+    fun `in case of observe then start then destroy then start, which is impossible, maybe should not has observer`() {
+        owner.(maybe.observe())(observer)
 
-        owner.create()
         owner.start()
         owner.destroy()
         owner.start()
@@ -128,17 +119,16 @@ class RxExtendedLifecycleHandlerMaybeTest {
     fun `in case of destroy then observe, maybe should not has observer`() {
         owner.destroy()
 
-        owner.(maybe.observe(life))(observer)
+        owner.(maybe.observe())(observer)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
-    fun `in case of create then start then observe, maybe should has observer`() {
-        owner.create()
+    fun `in case of start then observe, maybe should has observer`() {
         owner.start()
 
-        owner.(maybe.observe(life))(observer)
+        owner.(maybe.observe())(observer)
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
@@ -148,7 +138,7 @@ class RxExtendedLifecycleHandlerMaybeTest {
         owner.start()
         owner.stop()
 
-        owner.(maybe.observe(life))(observer)
+        owner.(maybe.observe())(observer)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -158,7 +148,7 @@ class RxExtendedLifecycleHandlerMaybeTest {
         owner.start()
         owner.destroy()
 
-        owner.(maybe.observe(life))(observer)
+        owner.(maybe.observe())(observer)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -167,26 +157,24 @@ class RxExtendedLifecycleHandlerMaybeTest {
     // region OBSERVE ON NEXT
     @Test
     fun `in case of just observeOnNext, maybe should not has observer`() {
-        owner.(maybe.observeOnNext(life))(onNext)
+        owner.(maybe.observeOnNext())(onNext)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
-    fun `in case of observeOnNext then create then start, maybe should has observer`() {
-        owner.(maybe.observeOnNext(life))(onNext)
+    fun `in case of observeOnNext then start, maybe should has observer`() {
+        owner.(maybe.observeOnNext())(onNext)
 
-        owner.create()
         owner.start()
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
 
     @Test
-    fun `in case of observeOnNext then create then start then stop, maybe should not has observer`() {
-        owner.(maybe.observeOnNext(life))(onNext)
+    fun `in case of observeOnNext then start then stop, maybe should not has observer`() {
+        owner.(maybe.observeOnNext())(onNext)
 
-        owner.create()
         owner.start()
         owner.stop()
 
@@ -194,10 +182,9 @@ class RxExtendedLifecycleHandlerMaybeTest {
     }
 
     @Test
-    fun `in case of observeOnNext then create then start then stop then start again, maybe should has observer`() {
-        owner.(maybe.observeOnNext(life))(onNext)
+    fun `in case of observeOnNext then start then stop then start again, maybe should has observer`() {
+        owner.(maybe.observeOnNext())(onNext)
 
-        owner.create()
         owner.start()
         owner.stop()
         owner.start()
@@ -206,10 +193,9 @@ class RxExtendedLifecycleHandlerMaybeTest {
     }
 
     @Test
-    fun `in case of observeOnNext then create then start then destroy, maybe should not has observer`() {
-        owner.(maybe.observeOnNext(life))(onNext)
+    fun `in case of observeOnNext then start then destroy, maybe should not has observer`() {
+        owner.(maybe.observeOnNext())(onNext)
 
-        owner.create()
         owner.start()
         owner.destroy()
 
@@ -217,10 +203,9 @@ class RxExtendedLifecycleHandlerMaybeTest {
     }
 
     @Test
-    fun `in case of observeOnNext then create then start then destroy then start, which is impossible, maybe should not has observer`() {
-        owner.(maybe.observeOnNext(life))(onNext)
+    fun `in case of observeOnNext then start then destroy then start, which is impossible, maybe should not has observer`() {
+        owner.(maybe.observeOnNext())(onNext)
 
-        owner.create()
         owner.start()
         owner.destroy()
         owner.start()
@@ -232,17 +217,16 @@ class RxExtendedLifecycleHandlerMaybeTest {
     fun `in case of destroy then observeOnNext, maybe should not has observer`() {
         owner.destroy()
 
-        owner.(maybe.observeOnNext(life))(onNext)
+        owner.(maybe.observeOnNext())(onNext)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
-    fun `in case of create then start then observeOnNext, maybe should has observer`() {
-        owner.create()
+    fun `in case of start then observeOnNext, maybe should has observer`() {
         owner.start()
 
-        owner.(maybe.observeOnNext(life))(onNext)
+        owner.(maybe.observeOnNext())(onNext)
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
@@ -252,7 +236,7 @@ class RxExtendedLifecycleHandlerMaybeTest {
         owner.start()
         owner.stop()
 
-        owner.(maybe.observeOnNext(life))(onNext)
+        owner.(maybe.observeOnNext())(onNext)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -262,7 +246,7 @@ class RxExtendedLifecycleHandlerMaybeTest {
         owner.start()
         owner.destroy()
 
-        owner.(maybe.observeOnNext(life))(onNext)
+        owner.(maybe.observeOnNext())(onNext)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -271,26 +255,24 @@ class RxExtendedLifecycleHandlerMaybeTest {
     // region OBSERVE ON NEXT ON ERROR
     @Test
     fun `in case of just observeOnNextOnError, maybe should not has observer`() {
-        owner.(maybe.observeOnNextOnError(life))(onNext, onError)
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
-    fun `in case of observeOnNextOnError then create then start, maybe should has observer`() {
-        owner.(maybe.observeOnNextOnError(life))(onNext, onError)
+    fun `in case of observeOnNextOnError then start, maybe should has observer`() {
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
 
-        owner.create()
         owner.start()
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
 
     @Test
-    fun `in case of observeOnNextOnError then create then start then stop, maybe should not has observer`() {
-        owner.(maybe.observeOnNextOnError(life))(onNext, onError)
+    fun `in case of observeOnNextOnError then start then stop, maybe should not has observer`() {
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
 
-        owner.create()
         owner.start()
         owner.stop()
 
@@ -298,10 +280,9 @@ class RxExtendedLifecycleHandlerMaybeTest {
     }
 
     @Test
-    fun `in case of observeOnNextOnError then creat then start then stop then start again, maybe should has observer`() {
-        owner.(maybe.observeOnNextOnError(life))(onNext, onError)
+    fun `in case of observeOnNextOnError then start then stop then start again, maybe should has observer`() {
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
 
-        owner.create()
         owner.start()
         owner.stop()
         owner.start()
@@ -310,10 +291,9 @@ class RxExtendedLifecycleHandlerMaybeTest {
     }
 
     @Test
-    fun `in case of observeOnNextOnError then creat then start then destroy, maybe should not has observer`() {
-        owner.(maybe.observeOnNextOnError(life))(onNext, onError)
+    fun `in case of observeOnNextOnError then start then destroy, maybe should not has observer`() {
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
 
-        owner.create()
         owner.start()
         owner.destroy()
 
@@ -321,10 +301,9 @@ class RxExtendedLifecycleHandlerMaybeTest {
     }
 
     @Test
-    fun `in case of observeOnNextOnError then create then start then destroy then start, which is impossible, maybe should not has observer`() {
-        owner.(maybe.observeOnNextOnError(life))(onNext, onError)
+    fun `in case of observeOnNextOnError then start then destroy then start, which is impossible, maybe should not has observer`() {
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
 
-        owner.create()
         owner.start()
         owner.destroy()
         owner.start()
@@ -336,17 +315,16 @@ class RxExtendedLifecycleHandlerMaybeTest {
     fun `in case of destroy then observeOnNextOnError, maybe should not has observer`() {
         owner.destroy()
 
-        owner.(maybe.observeOnNextOnError(life))(onNext, onError)
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
-    fun `in case of create then start then observeOnNextOnError, maybe should has observer`() {
-        owner.create()
+    fun `in case of start then observeOnNextOnError, maybe should has observer`() {
         owner.start()
 
-        owner.(maybe.observeOnNextOnError(life))(onNext, onError)
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
@@ -356,7 +334,7 @@ class RxExtendedLifecycleHandlerMaybeTest {
         owner.start()
         owner.stop()
 
-        owner.(maybe.observeOnNextOnError(life))(onNext, onError)
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -366,7 +344,7 @@ class RxExtendedLifecycleHandlerMaybeTest {
         owner.start()
         owner.destroy()
 
-        owner.(maybe.observeOnNextOnError(life))(onNext, onError)
+        owner.(maybe.observeOnNextOnError())(onNext, onError)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -375,26 +353,24 @@ class RxExtendedLifecycleHandlerMaybeTest {
     // region OBSERVE ON NEXT ON COMPLETE
     @Test
     fun `in case of just observeOnNextOnErrorOnComplete, maybe should not has observer`() {
-        owner.(maybe.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
-    fun `in case of observeOnNextOnErrorOnComplete then create then start, maybe should has observer`() {
-        owner.(maybe.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
+    fun `in case of observeOnNextOnErrorOnComplete then start, maybe should has observer`() {
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
 
-        owner.create()
         owner.start()
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
 
     @Test
-    fun `in case of observeOnNextOnErrorOnComplete then create then start then stop, maybe should not has observer`() {
-        owner.(maybe.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
+    fun `in case of observeOnNextOnErrorOnComplete then start then stop, maybe should not has observer`() {
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
 
-        owner.create()
         owner.start()
         owner.stop()
 
@@ -402,10 +378,9 @@ class RxExtendedLifecycleHandlerMaybeTest {
     }
 
     @Test
-    fun `in case of observeOnNextOnErrorOnComplete then create then start then stop then start again, maybe should has observer`() {
-        owner.(maybe.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
+    fun `in case of observeOnNextOnErrorOnComplete then start then stop then start again, maybe should has observer`() {
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
 
-        owner.create()
         owner.start()
         owner.stop()
         owner.start()
@@ -414,10 +389,9 @@ class RxExtendedLifecycleHandlerMaybeTest {
     }
 
     @Test
-    fun `in case of observeOnNextOnErrorOnComplete then create then start then destroy, maybe should not has observer`() {
-        owner.(maybe.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
+    fun `in case of observeOnNextOnErrorOnComplete then start then destroy, maybe should not has observer`() {
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
 
-        owner.create()
         owner.start()
         owner.destroy()
 
@@ -425,10 +399,9 @@ class RxExtendedLifecycleHandlerMaybeTest {
     }
 
     @Test
-    fun `in case of observeOnNextOnErrorOnComplete then create then start then destroy then start, which is impossible, maybe should not has observer`() {
-        owner.(maybe.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
+    fun `in case of observeOnNextOnErrorOnComplete then start then destroy then start, which is impossible, maybe should not has observer`() {
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
 
-        owner.create()
         owner.start()
         owner.destroy()
         owner.start()
@@ -440,17 +413,16 @@ class RxExtendedLifecycleHandlerMaybeTest {
     fun `in case of destroy then observeOnNextOnErrorOnComplete, maybe should not has observer`() {
         owner.destroy()
 
-        owner.(maybe.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
-    fun `in case of create then start then observeOnNextOnErrorOnComplete, maybe should has observer`() {
-        owner.create()
+    fun `in case of start then observeOnNextOnErrorOnComplete, maybe should has observer`() {
         owner.start()
 
-        owner.(maybe.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
@@ -460,7 +432,7 @@ class RxExtendedLifecycleHandlerMaybeTest {
         owner.start()
         owner.stop()
 
-        owner.(maybe.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -470,7 +442,7 @@ class RxExtendedLifecycleHandlerMaybeTest {
         owner.start()
         owner.destroy()
 
-        owner.(maybe.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
+        owner.(maybe.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }

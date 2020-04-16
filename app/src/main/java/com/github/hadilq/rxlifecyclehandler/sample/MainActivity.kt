@@ -17,7 +17,7 @@ package com.github.hadilq.rxlifecyclehandler.sample
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import com.github.hadilq.androidlifecyclehandler.ExtendedLife
+import com.github.hadilq.androidlifecyclehandler.ELife
 import com.github.hadilq.rxlifecyclehandler.observe
 import io.reactivex.Flowable
 import io.reactivex.Maybe
@@ -27,7 +27,7 @@ import io.reactivex.processors.PublishProcessor
 
 class MainActivity : ComponentActivity() {
 
-    private val life = object : ExtendedLife {
+    private val life = object : ELife {
         override fun onBorn(bundle: Bundle?) {
         }
 

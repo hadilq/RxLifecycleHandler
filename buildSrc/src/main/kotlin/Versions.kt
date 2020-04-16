@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 object Versions {
-    const val kotlin = "1.3.61"
+    const val kotlin = "1.3.72"
     const val dokka = "0.10.0"
     const val jacoco = "0.1.4"
 
@@ -30,7 +30,7 @@ object Versions {
 
     //Libraries
     const val lifecycle = "2.2.0-rc02"
-    const val androidlifecyclehandler = "0.2.0"
+    const val androidlifecyclehandler = "0.3.0"
     const val appCompat = "1.1.0"
     const val rx = "2.2.15"
     const val rxAndroid = "2.1.1"

@@ -11,7 +11,7 @@ class ProcessorLifecycleAwareImplTest {
     @Test
     fun `in case of processor, calling observe would call handler observe`() {
         val publisher = BehaviorProcessor.create<String>()
-        val handler = mock<RxLifecycleHandler<String>>()
+        val handler = mock<RxLifeHandler<String>>()
         val lifecycleAware = publisher.toLifecycleAware(handler)
 
         lifecycleAware.observe()

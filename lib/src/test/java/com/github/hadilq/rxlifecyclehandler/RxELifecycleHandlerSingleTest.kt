@@ -15,7 +15,7 @@
  */
 package com.github.hadilq.rxlifecyclehandler
 
-import com.github.hadilq.androidlifecyclehandler.ExtendedLife
+import com.github.hadilq.androidlifecyclehandler.ELife
 import io.reactivex.Single
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
@@ -28,7 +28,7 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 
-class RxExtendedLifecycleHandlerSingleTest {
+class RxELifecycleHandlerSingleTest {
 
     @get:Rule
     val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -43,7 +43,7 @@ class RxExtendedLifecycleHandlerSingleTest {
     private lateinit var onError: Consumer<Throwable>
 
     @Mock
-    private lateinit var life: ExtendedLife
+    private lateinit var life: ELife
 
     private lateinit var publisher: PublishSubject<String>
     private lateinit var single: Single<String>

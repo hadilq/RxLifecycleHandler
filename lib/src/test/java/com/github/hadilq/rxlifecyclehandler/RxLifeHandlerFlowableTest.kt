@@ -28,7 +28,7 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.reactivestreams.Subscription
 
-class RxLifecycleHandlerFlowableTest {
+class RxLifeHandlerFlowableTest {
 
     @get:Rule
     val mockitoRule: MockitoRule = MockitoJUnit.rule()

@@ -18,7 +18,7 @@
 package com.github.hadilq.rxlifecyclehandler
 
 import androidx.lifecycle.LifecycleOwner
-import com.github.hadilq.androidlifecyclehandler.AndroidLifecycleHandlerImpl
+import com.github.hadilq.androidlifecyclehandler.AndroidLifeHandlerImpl
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -50,7 +50,7 @@ import org.reactivestreams.Subscription
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Flowable<T>.observe(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.((T) -> Unit) -> Unit = handler.observe(this::subscribe)
 
 /***
@@ -73,7 +73,7 @@ fun <T> Flowable<T>.observe(
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Flowable<T>.observeOnNext(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.(Consumer<T>) -> Unit = handler.observeOnNext(this::subscribe)
 
 /***
@@ -96,7 +96,7 @@ fun <T> Flowable<T>.observeOnNext(
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Flowable<T>.observeOnNextOnError(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
     handler.observeOnNextOnError(this::subscribe)
 
@@ -124,7 +124,7 @@ fun <T> Flowable<T>.observeOnNextOnError(
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Flowable<T>.observeOnNextOnErrorOnComplete(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit =
     handler.observeOnNextOnErrorOnComplete(this::subscribe)
 
@@ -153,7 +153,7 @@ fun <T> Flowable<T>.observeOnNextOnErrorOnComplete(
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Flowable<T>.observeOnNextOnErrorOnCompleteOnSubscribe(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action, Consumer<Subscription>) -> Unit =
     handler.observeOnNextOnErrorOnCompleteOnSubscribe(this::subscribe)
 
@@ -177,7 +177,7 @@ fun <T> Flowable<T>.observeOnNextOnErrorOnCompleteOnSubscribe(
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Maybe<T>.observe(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.((T) -> Unit) -> Unit = handler.observe(this::subscribe)
 
 /***
@@ -200,7 +200,7 @@ fun <T> Maybe<T>.observe(
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Maybe<T>.observeOnNext(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.(Consumer<T>) -> Unit = handler.observeOnNext(this::subscribe)
 
 /***
@@ -223,7 +223,7 @@ fun <T> Maybe<T>.observeOnNext(
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Maybe<T>.observeOnNextOnError(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
     handler.observeOnNextOnError(this::subscribe)
 
@@ -251,7 +251,7 @@ fun <T> Maybe<T>.observeOnNextOnError(
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Maybe<T>.observeOnNextOnErrorOnComplete(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit =
     handler.observeOnNextOnErrorOnComplete(this::subscribe)
 
@@ -275,7 +275,7 @@ fun <T> Maybe<T>.observeOnNextOnErrorOnComplete(
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Observable<T>.observe(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.((T) -> Unit) -> Unit = handler.observe(this::subscribe)
 
 /***
@@ -298,7 +298,7 @@ fun <T> Observable<T>.observe(
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Observable<T>.observeOnNext(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.(Consumer<T>) -> Unit = handler.observeOnNext(this::subscribe)
 
 /***
@@ -321,7 +321,7 @@ fun <T> Observable<T>.observeOnNext(
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Observable<T>.observeOnNextOnError(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
     handler.observeOnNextOnError(this::subscribe)
 
@@ -349,7 +349,7 @@ fun <T> Observable<T>.observeOnNextOnError(
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Observable<T>.observeOnNextOnErrorOnComplete(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit =
     handler.observeOnNextOnErrorOnComplete(this::subscribe)
 
@@ -378,7 +378,7 @@ fun <T> Observable<T>.observeOnNextOnErrorOnComplete(
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Observable<T>.observeOnNextOnErrorOnCompleteOnSubscribe(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action, Consumer<Disposable>) -> Unit =
     handler.observeOnNextOnErrorOnCompleteOnDisposable(this::subscribe)
 
@@ -402,7 +402,7 @@ fun <T> Observable<T>.observeOnNextOnErrorOnCompleteOnSubscribe(
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Single<T>.observe(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.((T) -> Unit) -> Unit = handler.observe(this::subscribe)
 
 /***
@@ -425,7 +425,7 @@ fun <T> Single<T>.observe(
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Single<T>.observeOnNext(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.(Consumer<T>) -> Unit = handler.observeOnNext(this::subscribe)
 
 /***
@@ -448,7 +448,7 @@ fun <T> Single<T>.observeOnNext(
  * The [LifecycleOwner] is Activity or Fragment
  */
 fun <T> Single<T>.observeOnNextOnError(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(AndroidLifecycleHandlerImpl())
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
 ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
     handler.observeOnNextOnError(this::subscribe)
 
@@ -468,8 +468,8 @@ fun <T> Single<T>.observeOnNextOnError(
  * The [handler] to help you with dependency inversion principle.
  */
 fun <T : Any> Subject<T>.toLifecycleAware(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(
-        AndroidLifecycleHandlerImpl()
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(
+        AndroidLifeHandlerImpl()
     )
 ): LifecycleAware<T> = SubjectLifecycleAwareImpl(this, handler)
 
@@ -489,7 +489,7 @@ fun <T : Any> Subject<T>.toLifecycleAware(
  * The [handler] to help you with dependency inversion principle.
  */
 fun <T : Any> FlowableProcessor<T>.toLifecycleAware(
-    handler: RxLifecycleHandler<T> = RxLifecycleHandlerImpl(
-        AndroidLifecycleHandlerImpl()
+    handler: RxLifeHandler<T> = RxLifeHandlerImpl(
+        AndroidLifeHandlerImpl()
     )
 ): LifecycleAware<T> = ProcessorLifecycleAwareImpl(this, handler)

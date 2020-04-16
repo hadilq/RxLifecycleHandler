@@ -16,7 +16,7 @@
 package com.github.hadilq.rxlifecyclehandler
 
 import androidx.lifecycle.LifecycleOwner
-import com.github.hadilq.androidlifecyclehandler.AndroidLifecycleHandler
+import com.github.hadilq.androidlifecyclehandler.AndroidLifeHandler
 import com.github.hadilq.androidlifecyclehandler.LifeSpan
 import com.github.hadilq.rxlifecyclehandler.Entry.*
 import io.reactivex.disposables.Disposable
@@ -25,10 +25,10 @@ import io.reactivex.functions.Consumer
 import org.reactivestreams.Subscription
 
 /***
- * An implementation of [RxLifecycleHandler].
+ * An implementation of [RxLifeHandler].
  */
-class RxLifecycleHandlerImpl<T>(private val handler: AndroidLifecycleHandler) :
-    RxLifecycleHandler<T> {
+class RxLifeHandlerImpl<T>(private val handler: AndroidLifeHandler) :
+    RxLifeHandler<T> {
 
     override fun observe(
         subscribe: (Consumer<T>) -> Disposable

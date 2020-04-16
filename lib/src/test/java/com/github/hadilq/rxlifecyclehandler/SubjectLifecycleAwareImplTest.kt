@@ -11,7 +11,7 @@ class SubjectLifecycleAwareImplTest {
     @Test
     fun `in case of subject, calling observe would call handler observe`() {
         val publisher = BehaviorSubject.create<String>()
-        val handler = mock<RxLifecycleHandler<String>>()
+        val handler = mock<RxLifeHandler<String>>()
         val lifecycleAware = publisher.toLifecycleAware(handler)
 
         lifecycleAware.observe()

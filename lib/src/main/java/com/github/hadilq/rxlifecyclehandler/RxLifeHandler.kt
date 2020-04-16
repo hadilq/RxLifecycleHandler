@@ -35,7 +35,7 @@ import org.reactivestreams.Subscription
  * [Activity] or a [Fragment] needs the emitted values of upstream after [ON_START] and before
  * [ON_STOP].
  */
-interface RxLifecycleHandler<T> {
+interface RxLifeHandler<T> {
 
     fun observe(
         subscribe: (Consumer<T>) -> Disposable

@@ -315,7 +315,7 @@ class ProcessorExtendedLifecycleAwareImplTest {
         crossinline putter: Bundle.(T) -> Unit
     ) {
         val publisher = BehaviorProcessor.create<T>()
-        val handler = mock<RxExtendedLifecycleHandler<T>>()
+        val handler = mock<RxELifecycleHandler<T>>()
         val lifecycleAware = publisher.toExtendedLifecycleAware(KEY, handler)
         lifecycleAware.observe()
 
@@ -340,7 +340,7 @@ class ProcessorExtendedLifecycleAwareImplTest {
         crossinline getter: Bundle.() -> T
     ) {
         val publisher = BehaviorProcessor.create<T>()
-        val handler = mock<RxExtendedLifecycleHandler<T>>()
+        val handler = mock<RxELifecycleHandler<T>>()
         val lifecycleAware = publisher.toExtendedLifecycleAware(KEY, handler)
         lifecycleAware.observe()
 
@@ -363,7 +363,7 @@ class ProcessorExtendedLifecycleAwareImplTest {
     @Test
     fun `in case of processor, calling observe would call handler observe`() {
         val publisher = BehaviorProcessor.create<String>()
-        val handler = mock<RxExtendedLifecycleHandler<String>>()
+        val handler = mock<RxELifecycleHandler<String>>()
         val lifecycleAware = publisher.toExtendedLifecycleAware(KEY, handler)
 
         lifecycleAware.observe()

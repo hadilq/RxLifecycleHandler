@@ -15,6 +15,7 @@
  */
 package com.github.hadilq.rxlifecyclehandler
 
+import com.github.hadilq.androidlifecyclehandler.ELife
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
@@ -28,7 +29,7 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 
-class RxLifecycleHandlerObservableTest {
+class RxELifecycleHandlerObservableTest {
 
     @get:Rule
     val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -48,36 +49,41 @@ class RxLifecycleHandlerObservableTest {
     @Mock
     private lateinit var onSubscribe: Consumer<Disposable>
 
+    @Mock
+    private lateinit var life: ELife
+
     private lateinit var publisher: PublishSubject<String>
-    private lateinit var owner: TestLifecycleOwner
+    private lateinit var owner: TestSavedStateRegistryOwner
 
     @Before
     fun setup() {
-        owner = TestLifecycleOwner()
+        owner = TestSavedStateRegistryOwner()
         publisher = PublishSubject.create<String>()
     }
 
     // region OBSERVE
     @Test
     fun `in case of just observe, observable should not has observer`() {
-        owner.(publisher.observe())(observer)
+        owner.(publisher.observe(life))(observer)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
-    fun `in case of observe then start, observable should has observer`() {
-        owner.(publisher.observe())(observer)
+    fun `in case of observe then create then start, observable should has observer`() {
+        owner.(publisher.observe(life))(observer)
 
+        owner.create()
         owner.start()
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
 
     @Test
-    fun `in case of observe then start then stop, observable should not has observer`() {
-        owner.(publisher.observe())(observer)
+    fun `in case of observe then create then start then stop, observable should not has observer`() {
+        owner.(publisher.observe(life))(observer)
 
+        owner.create()
         owner.start()
         owner.stop()
 
@@ -85,9 +91,10 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of observe then start then stop then start again, observable should has observer`() {
-        owner.(publisher.observe())(observer)
+    fun `in case of observe then create then start then stop then start again, observable should has observer`() {
+        owner.(publisher.observe(life))(observer)
 
+        owner.create()
         owner.start()
         owner.stop()
         owner.start()
@@ -96,9 +103,10 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of observe then start then destroy, observable should not has observer`() {
-        owner.(publisher.observe())(observer)
+    fun `in case of observe then create then start then destroy, observable should not has observer`() {
+        owner.(publisher.observe(life))(observer)
 
+        owner.create()
         owner.start()
         owner.destroy()
 
@@ -106,9 +114,10 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of observe then start then destroy then start, which is impossible, observable should not has observer`() {
-        owner.(publisher.observe())(observer)
+    fun `in case of observe then create then start then destroy then start, which is impossible, observable should not has observer`() {
+        owner.(publisher.observe(life))(observer)
 
+        owner.create()
         owner.start()
         owner.destroy()
         owner.start()
@@ -120,16 +129,17 @@ class RxLifecycleHandlerObservableTest {
     fun `in case of destroy then observe, observable should not has observer`() {
         owner.destroy()
 
-        owner.(publisher.observe())(observer)
+        owner.(publisher.observe(life))(observer)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
-    fun `in case of start then observe, observable should has observer`() {
+    fun `in case of create then start then observe, observable should has observer`() {
+        owner.create()
         owner.start()
 
-        owner.(publisher.observe())(observer)
+        owner.(publisher.observe(life))(observer)
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
@@ -139,7 +149,7 @@ class RxLifecycleHandlerObservableTest {
         owner.start()
         owner.stop()
 
-        owner.(publisher.observe())(observer)
+        owner.(publisher.observe(life))(observer)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -149,7 +159,7 @@ class RxLifecycleHandlerObservableTest {
         owner.start()
         owner.destroy()
 
-        owner.(publisher.observe())(observer)
+        owner.(publisher.observe(life))(observer)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -158,24 +168,26 @@ class RxLifecycleHandlerObservableTest {
     // region OBSERVE ON NEXT
     @Test
     fun `in case of just observeOnNext, observable should not has observer`() {
-        owner.(publisher.observeOnNext())(onNext)
+        owner.(publisher.observeOnNext(life))(onNext)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
-    fun `in case of observeOnNext then start, observable should has observer`() {
-        owner.(publisher.observeOnNext())(onNext)
+    fun `in case of observeOnNext then create then start, observable should has observer`() {
+        owner.(publisher.observeOnNext(life))(onNext)
 
+        owner.create()
         owner.start()
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
 
     @Test
-    fun `in case of observeOnNext then start then stop, observable should not has observer`() {
-        owner.(publisher.observeOnNext())(onNext)
+    fun `in case of observeOnNext then create then start then stop, observable should not has observer`() {
+        owner.(publisher.observeOnNext(life))(onNext)
 
+        owner.create()
         owner.start()
         owner.stop()
 
@@ -183,9 +195,10 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of observeOnNext then start then stop then start again, observable should has observer`() {
-        owner.(publisher.observeOnNext())(onNext)
+    fun `in case of observeOnNext then create then start then stop then start again, observable should has observer`() {
+        owner.(publisher.observeOnNext(life))(onNext)
 
+        owner.create()
         owner.start()
         owner.stop()
         owner.start()
@@ -194,9 +207,10 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of observeOnNext then start then destroy, observable should not has observer`() {
-        owner.(publisher.observeOnNext())(onNext)
+    fun `in case of observeOnNext then create then start then destroy, observable should not has observer`() {
+        owner.(publisher.observeOnNext(life))(onNext)
 
+        owner.create()
         owner.start()
         owner.destroy()
 
@@ -204,9 +218,10 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of observeOnNext then start then destroy then start, which is impossible, observable should not has observer`() {
-        owner.(publisher.observeOnNext())(onNext)
+    fun `in case of observeOnNext then create then start then destroy then start, which is impossible, observable should not has observer`() {
+        owner.(publisher.observeOnNext(life))(onNext)
 
+        owner.create()
         owner.start()
         owner.destroy()
         owner.start()
@@ -218,16 +233,17 @@ class RxLifecycleHandlerObservableTest {
     fun `in case of destroy then observeOnNext, observable should not has observer`() {
         owner.destroy()
 
-        owner.(publisher.observeOnNext())(onNext)
+        owner.(publisher.observeOnNext(life))(onNext)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
-    fun `in case of start then observeOnNext, observable should has observer`() {
+    fun `in case of create then start then observeOnNext, observable should has observer`() {
+        owner.create()
         owner.start()
 
-        owner.(publisher.observeOnNext())(onNext)
+        owner.(publisher.observeOnNext(life))(onNext)
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
@@ -237,7 +253,7 @@ class RxLifecycleHandlerObservableTest {
         owner.start()
         owner.stop()
 
-        owner.(publisher.observeOnNext())(onNext)
+        owner.(publisher.observeOnNext(life))(onNext)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -247,7 +263,7 @@ class RxLifecycleHandlerObservableTest {
         owner.start()
         owner.destroy()
 
-        owner.(publisher.observeOnNext())(onNext)
+        owner.(publisher.observeOnNext(life))(onNext)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -256,24 +272,26 @@ class RxLifecycleHandlerObservableTest {
     // region OBSERVE ON NEXT ON ERROR
     @Test
     fun `in case of just observeOnNextOnError, observable should not has observer`() {
-        owner.(publisher.observeOnNextOnError())(onNext, onError)
+        owner.(publisher.observeOnNextOnError(life))(onNext, onError)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
-    fun `in case of observeOnNextOnError then start, observable should has observer`() {
-        owner.(publisher.observeOnNextOnError())(onNext, onError)
+    fun `in case of observeOnNextOnError then create then start, observable should has observer`() {
+        owner.(publisher.observeOnNextOnError(life))(onNext, onError)
 
+        owner.create()
         owner.start()
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
 
     @Test
-    fun `in case of observeOnNextOnError then start then stop, observable should not has observer`() {
-        owner.(publisher.observeOnNextOnError())(onNext, onError)
+    fun `in case of observeOnNextOnError then create then start then stop, observable should not has observer`() {
+        owner.(publisher.observeOnNextOnError(life))(onNext, onError)
 
+        owner.create()
         owner.start()
         owner.stop()
 
@@ -281,9 +299,10 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of observeOnNextOnError then start then stop then start again, observable should has observer`() {
-        owner.(publisher.observeOnNextOnError())(onNext, onError)
+    fun `in case of observeOnNextOnError then create then start then stop then start again, observable should has observer`() {
+        owner.(publisher.observeOnNextOnError(life))(onNext, onError)
 
+        owner.create()
         owner.start()
         owner.stop()
         owner.start()
@@ -292,9 +311,10 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of observeOnNextOnError then start then destroy, observable should not has observer`() {
-        owner.(publisher.observeOnNextOnError())(onNext, onError)
+    fun `in case of observeOnNextOnError then create then start then destroy, observable should not has observer`() {
+        owner.(publisher.observeOnNextOnError(life))(onNext, onError)
 
+        owner.create()
         owner.start()
         owner.destroy()
 
@@ -302,9 +322,10 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of observeOnNextOnError then start then destroy then start, which is impossible, observable should not has observer`() {
-        owner.(publisher.observeOnNextOnError())(onNext, onError)
+    fun `in case of observeOnNextOnError then create then start then destroy then start, which is impossible, observable should not has observer`() {
+        owner.(publisher.observeOnNextOnError(life))(onNext, onError)
 
+        owner.create()
         owner.start()
         owner.destroy()
         owner.start()
@@ -316,16 +337,17 @@ class RxLifecycleHandlerObservableTest {
     fun `in case of destroy then observeOnNextOnError, observable should not has observer`() {
         owner.destroy()
 
-        owner.(publisher.observeOnNextOnError())(onNext, onError)
+        owner.(publisher.observeOnNextOnError(life))(onNext, onError)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
-    fun `in case of start then observeOnNextOnError, observable should has observer`() {
+    fun `in case of create then start then observeOnNextOnError, observable should has observer`() {
+        owner.create()
         owner.start()
 
-        owner.(publisher.observeOnNextOnError())(onNext, onError)
+        owner.(publisher.observeOnNextOnError(life))(onNext, onError)
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
@@ -335,7 +357,7 @@ class RxLifecycleHandlerObservableTest {
         owner.start()
         owner.stop()
 
-        owner.(publisher.observeOnNextOnError())(onNext, onError)
+        owner.(publisher.observeOnNextOnError(life))(onNext, onError)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -345,7 +367,7 @@ class RxLifecycleHandlerObservableTest {
         owner.start()
         owner.destroy()
 
-        owner.(publisher.observeOnNextOnError())(onNext, onError)
+        owner.(publisher.observeOnNextOnError(life))(onNext, onError)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -354,24 +376,26 @@ class RxLifecycleHandlerObservableTest {
     // region OBSERVE ON NEXT ON ERROR ON COMPLETE
     @Test
     fun `in case of just observeOnNextOnErrorOnComplete, observable should not has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+        owner.(publisher.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
-    fun `in case of observeOnNextOnErrorOnComplete then start, observable should has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+    fun `in case of observeOnNextOnErrorOnComplete then create then start, observable should has observer`() {
+        owner.(publisher.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
 
+        owner.create()
         owner.start()
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
 
     @Test
-    fun `in case of observeOnNextOnErrorOnComplete then start then stop, observable should not has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+    fun `in case of observeOnNextOnErrorOnComplete then create then start then stop, observable should not has observer`() {
+        owner.(publisher.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
 
+        owner.create()
         owner.start()
         owner.stop()
 
@@ -379,9 +403,10 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of observeOnNextOnErrorOnComplete then start then stop then start again, observable should has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+    fun `in case of observeOnNextOnErrorOnComplete then create then start then stop then start again, observable should has observer`() {
+        owner.(publisher.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
 
+        owner.create()
         owner.start()
         owner.stop()
         owner.start()
@@ -390,9 +415,10 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of observeOnNextOnErrorOnComplete then start then destroy, observable should not has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+    fun `in case of observeOnNextOnErrorOnComplete then create then start then destroy, observable should not has observer`() {
+        owner.(publisher.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
 
+        owner.create()
         owner.start()
         owner.destroy()
 
@@ -400,9 +426,10 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of observeOnNextOnErrorOnComplete then start then destroy then start, which is impossible, observable should not has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+    fun `in case of observeOnNextOnErrorOnComplete then create then start then destroy then start, which is impossible, observable should not has observer`() {
+        owner.(publisher.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
 
+        owner.create()
         owner.start()
         owner.destroy()
         owner.start()
@@ -414,16 +441,17 @@ class RxLifecycleHandlerObservableTest {
     fun `in case of destroy then observeOnNextOnErrorOnComplete, observable should not has observer`() {
         owner.destroy()
 
-        owner.(publisher.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+        owner.(publisher.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
 
     @Test
-    fun `in case of start then observeOnNextOnErrorOnComplete, observable should has observer`() {
+    fun `in case of create then start then observeOnNextOnErrorOnComplete, observable should has observer`() {
+        owner.create()
         owner.start()
 
-        owner.(publisher.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+        owner.(publisher.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
@@ -433,7 +461,7 @@ class RxLifecycleHandlerObservableTest {
         owner.start()
         owner.stop()
 
-        owner.(publisher.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+        owner.(publisher.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -443,7 +471,7 @@ class RxLifecycleHandlerObservableTest {
         owner.start()
         owner.destroy()
 
-        owner.(publisher.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
+        owner.(publisher.observeOnNextOnErrorOnComplete(life))(onNext, onError, onComplete)
 
         assertThat(publisher.hasObservers(), `is`(false))
     }
@@ -452,7 +480,7 @@ class RxLifecycleHandlerObservableTest {
     // region OBSERVE ON NEXT ON ERROR ON COMPLETE ON SUBSCRIBE
     @Test
     fun `in case of just observeOnNextOnErrorOnCompleteOnSubscribe, observable should not has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
+        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe(life))(
             onNext,
             onError,
             onComplete,
@@ -463,28 +491,30 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then start, observable should has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
+    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then create then start, observable should has observer`() {
+        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe(life))(
             onNext,
             onError,
             onComplete,
             onSubscribe
         )
 
+        owner.create()
         owner.start()
 
         assertThat(publisher.hasObservers(), `is`(true))
     }
 
     @Test
-    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then start then stop, observable should not has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
+    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then create then start then stop, observable should not has observer`() {
+        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe(life))(
             onNext,
             onError,
             onComplete,
             onSubscribe
         )
 
+        owner.create()
         owner.start()
         owner.stop()
 
@@ -492,14 +522,15 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then start then stop then start again, observable should has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
+    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then create then start then stop then start again, observable should has observer`() {
+        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe(life))(
             onNext,
             onError,
             onComplete,
             onSubscribe
         )
 
+        owner.create()
         owner.start()
         owner.stop()
         owner.start()
@@ -508,14 +539,15 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then start then destroy, observable should not has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
+    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then create then start then destroy, observable should not has observer`() {
+        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe(life))(
             onNext,
             onError,
             onComplete,
             onSubscribe
         )
 
+        owner.create()
         owner.start()
         owner.destroy()
 
@@ -523,14 +555,15 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then start then destroy then start, which is impossible, observable should not has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
+    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then create then start then destroy then start, which is impossible, observable should not has observer`() {
+        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe(life))(
             onNext,
             onError,
             onComplete,
             onSubscribe
         )
 
+        owner.create()
         owner.start()
         owner.destroy()
         owner.start()
@@ -542,7 +575,7 @@ class RxLifecycleHandlerObservableTest {
     fun `in case of destroy then observeOnNextOnErrorOnCompleteOnSubscribe, observable should not has observer`() {
         owner.destroy()
 
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
+        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe(life))(
             onNext,
             onError,
             onComplete,
@@ -553,10 +586,11 @@ class RxLifecycleHandlerObservableTest {
     }
 
     @Test
-    fun `in case of start then observeOnNextOnErrorOnCompleteOnSubscribe, observable should has observer`() {
+    fun `in case of create then start then observeOnNextOnErrorOnCompleteOnSubscribe, observable should has observer`() {
+        owner.create()
         owner.start()
 
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
+        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe(life))(
             onNext,
             onError,
             onComplete,
@@ -571,7 +605,7 @@ class RxLifecycleHandlerObservableTest {
         owner.start()
         owner.stop()
 
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
+        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe(life))(
             onNext,
             onError,
             onComplete,
@@ -586,7 +620,7 @@ class RxLifecycleHandlerObservableTest {
         owner.start()
         owner.destroy()
 
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
+        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe(life))(
             onNext,
             onError,
             onComplete,

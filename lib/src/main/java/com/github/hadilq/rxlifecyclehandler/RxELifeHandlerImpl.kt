@@ -16,8 +16,8 @@
 package com.github.hadilq.rxlifecyclehandler
 
 import androidx.savedstate.SavedStateRegistryOwner
-import com.github.hadilq.androidlifecyclehandler.AndroidExtendedLifecycleHandler
-import com.github.hadilq.androidlifecyclehandler.ExtendedLife
+import com.github.hadilq.androidlifecyclehandler.AndroidELifeHandler
+import com.github.hadilq.androidlifecyclehandler.ELife
 import com.github.hadilq.androidlifecyclehandler.LifeSpan
 import com.github.hadilq.rxlifecyclehandler.ExtendedEntry.*
 import io.reactivex.disposables.Disposable
@@ -26,14 +26,14 @@ import io.reactivex.functions.Consumer
 import org.reactivestreams.Subscription
 
 /***
- * An implementation of [RxExtendedLifecycleHandler].
+ * An implementation of [RxELifecycleHandler].
  */
-class RxExtendedLifecycleHandlerImpl<T>(private val handler: AndroidExtendedLifecycleHandler) :
-    RxExtendedLifecycleHandler<T> {
+class RxELifeHandlerImpl<T>(private val handler: AndroidELifeHandler) :
+    RxELifecycleHandler<T> {
 
     override fun observe(
         subscribe: (Consumer<T>) -> Disposable,
-        life: ExtendedLife,
+        life: ELife,
         key: String
     ): SavedStateRegistryOwner.((T) -> Unit) -> Unit = { observer: (T) -> Unit ->
         observeEntry(ObserveEntry(observer, subscribe, life), key)
@@ -41,7 +41,7 @@ class RxExtendedLifecycleHandlerImpl<T>(private val handler: AndroidExtendedLife
 
     override fun observeOnNext(
         subscribe: (Consumer<T>) -> Disposable,
-        life: ExtendedLife,
+        life: ELife,
         key: String
     ): SavedStateRegistryOwner.(Consumer<T>) -> Unit = { onNext: Consumer<T> ->
         observeEntry(OnNextEntry(onNext, subscribe, life), key)
@@ -49,7 +49,7 @@ class RxExtendedLifecycleHandlerImpl<T>(private val handler: AndroidExtendedLife
 
     override fun observeOnNextOnError(
         subscribe: (Consumer<T>, Consumer<Throwable>) -> Disposable,
-        life: ExtendedLife,
+        life: ELife,
         key: String
     ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
         { onNext: Consumer<T>, onError: Consumer<Throwable> ->
@@ -58,7 +58,7 @@ class RxExtendedLifecycleHandlerImpl<T>(private val handler: AndroidExtendedLife
 
     override fun observeOnNextOnErrorOnComplete(
         subscribe: (Consumer<T>, Consumer<Throwable>, Action) -> Disposable,
-        life: ExtendedLife,
+        life: ELife,
         key: String
     ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit =
         { onNext: Consumer<T>,
@@ -77,7 +77,7 @@ class RxExtendedLifecycleHandlerImpl<T>(private val handler: AndroidExtendedLife
             Action,
             Consumer<Subscription>
         ) -> Disposable,
-        life: ExtendedLife,
+        life: ELife,
         key: String
     ): SavedStateRegistryOwner.(
         Consumer<T>,
@@ -109,7 +109,7 @@ class RxExtendedLifecycleHandlerImpl<T>(private val handler: AndroidExtendedLife
             Action,
             Consumer<Disposable>
         ) -> Disposable,
-        life: ExtendedLife,
+        life: ELife,
         key: String
     ): SavedStateRegistryOwner.(
         Consumer<T>,

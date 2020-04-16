@@ -20,7 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle.Event.ON_START
 import androidx.lifecycle.Lifecycle.Event.ON_STOP
 import androidx.savedstate.SavedStateRegistryOwner
-import com.github.hadilq.androidlifecyclehandler.ExtendedLife
+import com.github.hadilq.androidlifecyclehandler.ELife
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -36,29 +36,29 @@ import org.reactivestreams.Subscription
  * is an [Activity] or a [Fragment] needs the emitted values of upstream after [ON_START] and
  * before [ON_STOP] or [Activity.onSaveInstanceState] or [Fragment.onSaveInstanceState] events.
  */
-interface RxExtendedLifecycleHandler<T> {
+interface RxELifecycleHandler<T> {
 
     fun observe(
         subscribe: (Consumer<T>) -> Disposable,
-        life: ExtendedLife,
+        life: ELife,
         key: String = ""
     ): SavedStateRegistryOwner.((T) -> Unit) -> Unit
 
     fun observeOnNext(
         subscribe: (Consumer<T>) -> Disposable,
-        life: ExtendedLife,
+        life: ELife,
         key: String = ""
     ): SavedStateRegistryOwner.(Consumer<T>) -> Unit
 
     fun observeOnNextOnError(
         subscribe: (Consumer<T>, Consumer<Throwable>) -> Disposable,
-        life: ExtendedLife,
+        life: ELife,
         key: String = ""
     ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>) -> Unit
 
     fun observeOnNextOnErrorOnComplete(
         subscribe: (Consumer<T>, Consumer<Throwable>, Action) -> Disposable,
-        life: ExtendedLife,
+        life: ELife,
         key: String = ""
     ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit
 
@@ -69,7 +69,7 @@ interface RxExtendedLifecycleHandler<T> {
             Action,
             Consumer<Subscription>
         ) -> Disposable,
-        life: ExtendedLife,
+        life: ELife,
         key: String = ""
     ): SavedStateRegistryOwner.(
         Consumer<T>,
@@ -85,7 +85,7 @@ interface RxExtendedLifecycleHandler<T> {
             Action,
             Consumer<Disposable>
         ) -> Disposable,
-        life: ExtendedLife,
+        life: ELife,
         key: String = ""
     ): SavedStateRegistryOwner.(
         Consumer<T>,

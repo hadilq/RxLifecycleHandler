@@ -18,8 +18,8 @@
 package com.github.hadilq.rxlifecyclehandler
 
 import androidx.savedstate.SavedStateRegistryOwner
-import com.github.hadilq.androidlifecyclehandler.AndroidExtendedLifecycleHandlerImpl
-import com.github.hadilq.androidlifecyclehandler.ExtendedLife
+import com.github.hadilq.androidlifecyclehandler.AndroidELifeHandlerImpl
+import com.github.hadilq.androidlifecyclehandler.ELife
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -47,16 +47,16 @@ import org.reactivestreams.Subscription
  * ```
  *
  * The [Flowable] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Flowable<T>.observe(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.((T) -> Unit) -> Unit = handler.observe(this::subscribe, life, key)
 
@@ -76,16 +76,16 @@ fun <T> Flowable<T>.observe(
  * ```
  *
  * The [Flowable] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Flowable<T>.observeOnNext(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.(Consumer<T>) -> Unit = handler.observeOnNext(this::subscribe, life, key)
 
@@ -105,16 +105,16 @@ fun <T> Flowable<T>.observeOnNext(
  * ```
  *
  * The [Flowable] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Flowable<T>.observeOnNextOnError(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
     handler.observeOnNextOnError(this::subscribe, life, key)
@@ -139,16 +139,16 @@ fun <T> Flowable<T>.observeOnNextOnError(
  * ```
  *
  * The [Flowable] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Flowable<T>.observeOnNextOnErrorOnComplete(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit =
     handler.observeOnNextOnErrorOnComplete(this::subscribe, life, key)
@@ -174,16 +174,16 @@ fun <T> Flowable<T>.observeOnNextOnErrorOnComplete(
  * ```
  *
  * The [Flowable] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Flowable<T>.observeOnNextOnErrorOnCompleteOnSubscribe(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>, Action, Consumer<Subscription>) -> Unit =
     handler.observeOnNextOnErrorOnCompleteOnSubscribe(this::subscribe, life, key)
@@ -204,16 +204,16 @@ fun <T> Flowable<T>.observeOnNextOnErrorOnCompleteOnSubscribe(
  * ```
  *
  * The [Maybe] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Maybe<T>.observe(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.((T) -> Unit) -> Unit = handler.observe(this::subscribe, life, key)
 
@@ -233,16 +233,16 @@ fun <T> Maybe<T>.observe(
  * ```
  *
  * The [Maybe] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Maybe<T>.observeOnNext(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.(Consumer<T>) -> Unit = handler.observeOnNext(this::subscribe, life, key)
 
@@ -262,16 +262,16 @@ fun <T> Maybe<T>.observeOnNext(
  * ```
  *
  * The [Maybe] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Maybe<T>.observeOnNextOnError(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
     handler.observeOnNextOnError(this::subscribe, life, key)
@@ -296,16 +296,16 @@ fun <T> Maybe<T>.observeOnNextOnError(
  * ```
  *
  * The [Maybe] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Maybe<T>.observeOnNextOnErrorOnComplete(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit =
     handler.observeOnNextOnErrorOnComplete(this::subscribe, life, key)
@@ -326,16 +326,16 @@ fun <T> Maybe<T>.observeOnNextOnErrorOnComplete(
  * ```
  *
  * The [Observable] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Observable<T>.observe(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.((T) -> Unit) -> Unit = handler.observe(this::subscribe, life, key)
 
@@ -355,16 +355,16 @@ fun <T> Observable<T>.observe(
  * ```
  *
  * The [Observable] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Observable<T>.observeOnNext(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.(Consumer<T>) -> Unit = handler.observeOnNext(this::subscribe, life, key)
 
@@ -384,16 +384,16 @@ fun <T> Observable<T>.observeOnNext(
  * ```
  *
  * The [Observable] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Observable<T>.observeOnNextOnError(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
     handler.observeOnNextOnError(this::subscribe, life, key)
@@ -418,16 +418,16 @@ fun <T> Observable<T>.observeOnNextOnError(
  * ```
  *
  * The [Observable] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Observable<T>.observeOnNextOnErrorOnComplete(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit =
     handler.observeOnNextOnErrorOnComplete(this::subscribe, life, key)
@@ -453,16 +453,16 @@ fun <T> Observable<T>.observeOnNextOnErrorOnComplete(
  * ```
  *
  * The [Observable] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Observable<T>.observeOnNextOnErrorOnCompleteOnSubscribe(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>, Action, Consumer<Disposable>) -> Unit =
     handler.observeOnNextOnErrorOnCompleteOnDisposable(this::subscribe, life, key)
@@ -483,16 +483,16 @@ fun <T> Observable<T>.observeOnNextOnErrorOnCompleteOnSubscribe(
  * ```
  *
  * The [Single] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Single<T>.observe(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.((T) -> Unit) -> Unit = handler.observe(this::subscribe, life, key)
 
@@ -512,16 +512,16 @@ fun <T> Single<T>.observe(
  * ```
  *
  * The [Single] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Single<T>.observeOnNext(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.(Consumer<T>) -> Unit = handler.observeOnNext(this::subscribe, life, key)
 
@@ -541,16 +541,16 @@ fun <T> Single<T>.observeOnNext(
  * ```
  *
  * The [Single] is an upstream.
- * The [life] is for handling the bundle in [ExtendedLife].
+ * The [life] is for handling the bundle in [ELife].
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] is to help you with dependency inversion principle.
  * The [SavedStateRegistryOwner] is Activity or Fragment
  */
 fun <T> Single<T>.observeOnNextOnError(
-    life: ExtendedLife,
+    life: ELife,
     key: String = "",
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
     handler.observeOnNextOnError(this::subscribe, life, key)
@@ -577,8 +577,8 @@ fun <T> Single<T>.observeOnNextOnError(
  */
 inline fun <reified T : Any> Subject<T>.toExtendedLifecycleAware(
     key: String,
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): ExtendedLifecycleAware<T> = SubjectExtendedLifecycleAwareImpl(this, handler, key, T::class)
 
@@ -604,7 +604,7 @@ inline fun <reified T : Any> Subject<T>.toExtendedLifecycleAware(
  */
 inline fun <reified T : Any> FlowableProcessor<T>.toExtendedLifecycleAware(
     key: String,
-    handler: RxExtendedLifecycleHandler<T> = RxExtendedLifecycleHandlerImpl(
-        AndroidExtendedLifecycleHandlerImpl()
+    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
+        AndroidELifeHandlerImpl()
     )
 ): ExtendedLifecycleAware<T> = ProcessorExtendedLifecycleAwareImpl(this, handler, key, T::class)

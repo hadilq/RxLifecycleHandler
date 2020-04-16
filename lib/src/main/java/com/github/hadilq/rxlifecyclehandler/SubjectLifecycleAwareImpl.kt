@@ -23,7 +23,7 @@ import io.reactivex.subjects.Subject
  */
 class SubjectLifecycleAwareImpl<T : Any>(
     private val subject: Subject<T>,
-    private val handler: RxLifecycleHandler<T>
+    private val handler: RxLifeHandler<T>
 ) : LifecycleAware<T> {
 
     override fun observe(): LifecycleOwner.((T) -> Unit) -> Unit =

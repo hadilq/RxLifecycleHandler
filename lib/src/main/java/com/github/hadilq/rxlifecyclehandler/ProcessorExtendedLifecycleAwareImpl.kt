@@ -24,7 +24,7 @@ import kotlin.reflect.KClass
  */
 class ProcessorExtendedLifecycleAwareImpl<T : Any>(
     private val processor: FlowableProcessor<T>,
-    private val handler: RxExtendedLifecycleHandler<T>,
+    private val handler: RxELifecycleHandler<T>,
     private val key: String,
     clazz: KClass<T>
 ) : AbsExtendedLifecycleAware<T>(clazz) {

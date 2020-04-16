@@ -16,13 +16,13 @@
 package com.github.hadilq.rxlifecyclehandler
 
 import android.os.Bundle
-import com.github.hadilq.androidlifecyclehandler.ExtendedLife
+import com.github.hadilq.androidlifecyclehandler.ELife
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
 import org.reactivestreams.Subscription
 
-sealed class ExtendedEntry<T>(val life: ExtendedLife) : ExtendedLife {
+sealed class ExtendedEntry<T>(val life: ELife) : ELife {
 
     protected var disposable: Disposable? = null
 
@@ -35,7 +35,7 @@ sealed class ExtendedEntry<T>(val life: ExtendedLife) : ExtendedLife {
     class ObserveEntry<T>(
         val fn: (T) -> Unit,
         val subscribe: (Consumer<T>) -> Disposable,
-        life: ExtendedLife
+        life: ELife
     ) : ExtendedEntry<T>(life) {
 
         override fun onBorn(bundle: Bundle?) {
@@ -47,7 +47,7 @@ sealed class ExtendedEntry<T>(val life: ExtendedLife) : ExtendedLife {
     class OnNextEntry<T>(
         private val onNext: Consumer<T>,
         val subscribe: (Consumer<T>) -> Disposable,
-        life: ExtendedLife
+        life: ELife
     ) : ExtendedEntry<T>(life) {
 
         override fun onBorn(bundle: Bundle?) {
@@ -60,7 +60,7 @@ sealed class ExtendedEntry<T>(val life: ExtendedLife) : ExtendedLife {
         private val onNext: Consumer<T>,
         private val onError: Consumer<Throwable>,
         val subscribe: (Consumer<T>, Consumer<Throwable>) -> Disposable,
-        life: ExtendedLife
+        life: ELife
     ) : ExtendedEntry<T>(life) {
 
         override fun onBorn(bundle: Bundle?) {
@@ -74,7 +74,7 @@ sealed class ExtendedEntry<T>(val life: ExtendedLife) : ExtendedLife {
         private val onError: Consumer<Throwable>,
         private val onComplete: Action,
         val subscribe: (Consumer<T>, Consumer<Throwable>, Action) -> Disposable,
-        life: ExtendedLife
+        life: ELife
     ) : ExtendedEntry<T>(life) {
 
         override fun onBorn(bundle: Bundle?) {
@@ -94,7 +94,7 @@ sealed class ExtendedEntry<T>(val life: ExtendedLife) : ExtendedLife {
             Action,
             Consumer<Subscription>
         ) -> Disposable,
-        life: ExtendedLife
+        life: ELife
     ) : ExtendedEntry<T>(life) {
 
         override fun onBorn(bundle: Bundle?) {
@@ -114,7 +114,7 @@ sealed class ExtendedEntry<T>(val life: ExtendedLife) : ExtendedLife {
             Action,
             Consumer<Disposable>
         ) -> Disposable,
-        life: ExtendedLife
+        life: ELife
     ) : ExtendedEntry<T>(life) {
 
         override fun onBorn(bundle: Bundle?) {

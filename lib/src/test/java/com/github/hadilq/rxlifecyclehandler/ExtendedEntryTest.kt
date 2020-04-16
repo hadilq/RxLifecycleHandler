@@ -1,6 +1,6 @@
 package com.github.hadilq.rxlifecyclehandler
 
-import com.github.hadilq.androidlifecyclehandler.ExtendedLife
+import com.github.hadilq.androidlifecyclehandler.ELife
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
@@ -14,7 +14,7 @@ class ExtendedEntryTest {
 
     @Test
     fun `in case of on born of ObserveEntry, must subscribe`() {
-        val life: ExtendedLife = mock()
+        val life: ELife = mock()
         val fn: (String) -> Unit = mock()
         val sub: (Consumer<String>) -> Disposable = mock()
         val entry = ExtendedEntry.ObserveEntry(fn, sub, life)
@@ -27,7 +27,7 @@ class ExtendedEntryTest {
 
     @Test
     fun `in case of on born of OnNextEntry, must subscribe`() {
-        val life: ExtendedLife = mock()
+        val life: ELife = mock()
         val onNext: Consumer<String> = mock()
         val sub: (Consumer<String>) -> Disposable = mock()
         val entry = ExtendedEntry.OnNextEntry(onNext, sub, life)
@@ -40,7 +40,7 @@ class ExtendedEntryTest {
 
     @Test
     fun `in case of on born of OnNextOnErrorEntry, must subscribe`() {
-        val life: ExtendedLife = mock()
+        val life: ELife = mock()
         val onNext: Consumer<String> = mock()
         val onError: Consumer<Throwable> = mock()
         val sub: (Consumer<String>, Consumer<Throwable>) -> Disposable = mock()
@@ -54,7 +54,7 @@ class ExtendedEntryTest {
 
     @Test
     fun `in case of on born of OnNextOnErrorOnCompleteEntry, must subscribe`() {
-        val life: ExtendedLife = mock()
+        val life: ELife = mock()
         val onNext: Consumer<String> = mock()
         val onError: Consumer<Throwable> = mock()
         val onComplete: Action = mock()
@@ -70,7 +70,7 @@ class ExtendedEntryTest {
 
     @Test
     fun `in case of on born of OnNextOnErrorOnCompleteOnSubscribeEntry, must subscribe`() {
-        val life: ExtendedLife = mock()
+        val life: ELife = mock()
         val onNext: Consumer<String> = mock()
         val onError: Consumer<Throwable> = mock()
         val onComplete: Action = mock()
@@ -94,7 +94,7 @@ class ExtendedEntryTest {
 
     @Test
     fun `in case of on born of OnNextOnErrorOnCompleteOnDisposableEntry, must subscribe`() {
-        val life: ExtendedLife = mock()
+        val life: ELife = mock()
         val onNext: Consumer<String> = mock()
         val onError: Consumer<Throwable> = mock()
         val onComplete: Action = mock()
