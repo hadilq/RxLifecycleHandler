@@ -11,7 +11,7 @@ from the upstream of `RxJava`, so called `Observable`, `Flowable`, `Maybe`, and 
 we support a more general assumption that we want the emitted values after `start` and before
  `stop` or `saveState` of `SavedStateRegistryOwner`, depends which one gets called sooner.
 
-Also you can find its tween library for Kotlin Coroutines in https://github.com/hadilq/CoroutineLifecycleHandler/.
+Also you can find its twin library for Kotlin Coroutines in https://github.com/hadilq/CoroutineLifecycleHandler/.
 
 Usage
 ---
