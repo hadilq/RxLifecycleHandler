@@ -32,6 +32,25 @@ Adding:
  - `LifeStore`
  - `SLife`
 
+Modified:
+ - `Flowable<T>.observeOnNext(): LifecycleOwner.(Consumer<T>) -> Unit` to `Flowable<T>.observeOnNext(): LifecycleOwner.((T) -> Unit) -> Unit`
+ - `Observable<T>.observeOnNext(): LifecycleOwner.(Consumer<T>) -> Unit` to `Observable<T>.observeOnNext(): LifecycleOwner.((T) -> Unit) -> Unit`
+ - `Maybe<T>.observeOnNext(): LifecycleOwner.(Consumer<T>) -> Unit` to `Maybe<T>.observeOnNext(): LifecycleOwner.((T) -> Unit) -> Unit`
+ - `Single<T>.observeOnNext(): LifecycleOwner.(Consumer<T>) -> Unit` to `Single<T>.observeOnNext(): LifecycleOwner.((T) -> Unit) -> Unit`
+ - `Flowable<T>.observeOnNextOnError(): LifecycleOwner.(Consumer<T>, Consumer<Throwable>) -> Unit` to `Flowable<T>.observeOnNextOnError(): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit) -> Unit`
+ - `Observable<T>.observeOnNextOnError(): LifecycleOwner.(Consumer<T>, Consumer<Throwable>) -> Unit` to `Observable<T>.observeOnNextOnError(): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit) -> Unit`
+ - `Maybe<T>.observeOnNextOnError(): LifecycleOwner.(Consumer<T>, Consumer<Throwable>) -> Unit` to `Maybe<T>.observeOnNextOnError(): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit) -> Unit`
+ - `Single<T>.observeOnNextOnError(): LifecycleOwner.(Consumer<T>, Consumer<Throwable>) -> Unit` to `Single<T>.observeOnNextOnError(): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit) -> Unit`
+ - `Flowable<T>.observeOnNextOnErrorOnComplete(): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit` to `Flowable<T>.observeOnNextOnErrorOnComplete(): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit, () -> Unit) -> Unit`
+ - `Observable<T>.observeOnNextOnErrorOnComplete(): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit` to `Observable<T>.observeOnNextOnErrorOnComplete(): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit, () -> Unit) -> Unit`
+ - `Maybe<T>.observeOnNextOnErrorOnComplete(): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit` to `Maybe<T>.observeOnNextOnErrorOnComplete(): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit, () -> Unit) -> Unit`
+ - `Single<T>.observeOnNextOnErrorOnComplete(): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit` to `Single<T>.observeOnNextOnErrorOnComplete(): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit, () -> Unit -> Unit`
+
+Removing:
+ - `bservable<T>.observeOnNextOnErrorOnCompleteOnSubscribe()`
+ - `Flowable<T>.observeOnNextOnErrorOnCompleteOnSubscribe()`
+`
+
 0.2.0
 -----
 

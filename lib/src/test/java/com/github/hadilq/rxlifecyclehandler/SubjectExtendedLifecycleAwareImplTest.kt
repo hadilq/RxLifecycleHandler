@@ -3,8 +3,7 @@ package com.github.hadilq.rxlifecyclehandler
 import android.os.Bundle
 import android.os.Parcelable
 import com.nhaarman.mockito_kotlin.*
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
+import io.reactivex.Flowable
 import io.reactivex.subjects.BehaviorSubject
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -322,10 +321,10 @@ class SubjectExtendedLifecycleAwareImplTest {
         lifecycleAware.onBorn(Bundle().apply { putter(value) })
 
         // To cache a value
-        val captor = argumentCaptor<(Consumer<T>) -> Disposable>()
-        verify(handler).observe(captor.capture(), eq(lifecycleAware), eq(KEY))
+        val captor = argumentCaptor<Flowable<T>>()
+        verify(handler).observeOnNext(captor.capture(), eq(lifecycleAware), eq(KEY))
         var result: T? = null
-        captor.firstValue.invoke(Consumer { result = it })
+        captor.firstValue.subscribe { result = it }
 
         if (supportAutoBoxing) {
             assert(result == value)
@@ -347,9 +346,9 @@ class SubjectExtendedLifecycleAwareImplTest {
         publisher.onNext(value)
 
         // To cache a value
-        val captor = argumentCaptor<(Consumer<T>) -> Disposable>()
-        verify(handler).observe(captor.capture(), eq(lifecycleAware), eq(KEY))
-        captor.firstValue.invoke(Consumer { })
+        val captor = argumentCaptor<Flowable<T>>()
+        verify(handler).observeOnNext(captor.capture(), eq(lifecycleAware), eq(KEY))
+        captor.firstValue.subscribe()
 
         val result = lifecycleAware.onDie()
 
@@ -368,7 +367,7 @@ class SubjectExtendedLifecycleAwareImplTest {
 
         lifecycleAware.observe()
 
-        verify(handler).observe(any(), any(), eq(KEY))
+        verify(handler).observeOnNext(any(), any(), eq(KEY))
     }
 
     data class UnsupportedData(val unknown: Boolean)

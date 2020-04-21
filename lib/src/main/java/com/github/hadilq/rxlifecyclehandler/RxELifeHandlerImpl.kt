@@ -19,11 +19,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.github.hadilq.androidlifecyclehandler.AndroidELifeHandler
 import com.github.hadilq.androidlifecyclehandler.ELife
 import com.github.hadilq.androidlifecyclehandler.LifeSpan
-import com.github.hadilq.rxlifecyclehandler.ExtendedEntry.*
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Action
-import io.reactivex.functions.Consumer
-import org.reactivestreams.Subscription
+import io.reactivex.Flowable
 
 /***
  * An implementation of [RxELifecycleHandler].
@@ -31,110 +27,47 @@ import org.reactivestreams.Subscription
 class RxELifeHandlerImpl<T>(private val handler: AndroidELifeHandler) :
     RxELifecycleHandler<T> {
 
-    override fun observe(
-        subscribe: (Consumer<T>) -> Disposable,
-        life: ELife,
-        key: String
-    ): SavedStateRegistryOwner.((T) -> Unit) -> Unit = { observer: (T) -> Unit ->
-        observeEntry(ObserveEntry(observer, subscribe, life), key)
-    }
-
     override fun observeOnNext(
-        subscribe: (Consumer<T>) -> Disposable,
+        flowable: Flowable<T>,
         life: ELife,
         key: String
-    ): SavedStateRegistryOwner.(Consumer<T>) -> Unit = { onNext: Consumer<T> ->
-        observeEntry(OnNextEntry(onNext, subscribe, life), key)
-    }
+    ): SavedStateRegistryOwner.((T) -> Unit) -> Unit =
+        { onNext: (T) -> Unit ->
+            observeEntry(flowable.doOnNext(onNext).toELife(life), key)
+        }
 
     override fun observeOnNextOnError(
-        subscribe: (Consumer<T>, Consumer<Throwable>) -> Disposable,
+        flowable: Flowable<T>,
         life: ELife,
         key: String
-    ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
-        { onNext: Consumer<T>, onError: Consumer<Throwable> ->
-            observeEntry(OnNextOnErrorEntry(onNext, onError, subscribe, life), key)
+    ): SavedStateRegistryOwner.((T) -> Unit, (Throwable) -> Unit) -> Unit =
+        { onNext: (T) -> Unit, onError: (Throwable) -> Unit ->
+            observeEntry(
+                flowable
+                    .doOnNext(onNext)
+                    .doOnError(onError)
+                    .toELife(life),
+                key
+            )
         }
 
     override fun observeOnNextOnErrorOnComplete(
-        subscribe: (Consumer<T>, Consumer<Throwable>, Action) -> Disposable,
+        flowable: Flowable<T>,
         life: ELife,
         key: String
-    ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit =
-        { onNext: Consumer<T>,
-          onError: Consumer<Throwable>,
-          onComplete: Action ->
+    ): SavedStateRegistryOwner.((T) -> Unit, (Throwable) -> Unit, () -> Unit) -> Unit =
+        { onNext: (T) -> Unit, onError: (Throwable) -> Unit, onComplete: () -> Unit ->
             observeEntry(
-                OnNextOnErrorOnCompleteEntry(onNext, onError, onComplete, subscribe, life),
+                flowable
+                    .doOnNext(onNext)
+                    .doOnError(onError)
+                    .doOnComplete(onComplete)
+                    .toELife(life),
                 key
             )
         }
 
-    override fun observeOnNextOnErrorOnCompleteOnSubscribe(
-        subscribe: (
-            Consumer<T>,
-            Consumer<Throwable>,
-            Action,
-            Consumer<Subscription>
-        ) -> Disposable,
-        life: ELife,
-        key: String
-    ): SavedStateRegistryOwner.(
-        Consumer<T>,
-        Consumer<Throwable>,
-        Action,
-        Consumer<Subscription>
-    ) -> Unit =
-        { onNext: Consumer<T>,
-          onError: Consumer<Throwable>,
-          onComplete: Action,
-          onSubscribe: Consumer<Subscription> ->
-            observeEntry(
-                OnNextOnErrorOnCompleteOnSubscribeEntry(
-                    onNext,
-                    onError,
-                    onComplete,
-                    onSubscribe,
-                    subscribe,
-                    life
-                ),
-                key
-            )
-        }
-
-    override fun observeOnNextOnErrorOnCompleteOnDisposable(
-        subscribe: (
-            Consumer<T>,
-            Consumer<Throwable>,
-            Action,
-            Consumer<Disposable>
-        ) -> Disposable,
-        life: ELife,
-        key: String
-    ): SavedStateRegistryOwner.(
-        Consumer<T>,
-        Consumer<Throwable>,
-        Action,
-        Consumer<Disposable>
-    ) -> Unit =
-        { onNext: Consumer<T>,
-          onError: Consumer<Throwable>,
-          onComplete: Action,
-          onSubscribe: Consumer<Disposable> ->
-            observeEntry(
-                OnNextOnErrorOnCompleteOnDisposableEntry(
-                    onNext,
-                    onError,
-                    onComplete,
-                    onSubscribe,
-                    subscribe,
-                    life
-                ),
-                key
-            )
-        }
-
-    private fun SavedStateRegistryOwner.observeEntry(entry: ExtendedEntry<T>, key: String) {
+    private fun SavedStateRegistryOwner.observeEntry(entry: EEntry, key: String) {
         handler.register(this, entry, LifeSpan.STARTED, key)
     }
 }

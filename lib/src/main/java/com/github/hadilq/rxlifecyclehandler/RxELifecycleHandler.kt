@@ -25,10 +25,6 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Action
-import io.reactivex.functions.Consumer
-import org.reactivestreams.Subscription
 
 /***
  * A class to handle lifecycle of subscription and unsubscription of a [Observable],
@@ -38,59 +34,21 @@ import org.reactivestreams.Subscription
  */
 interface RxELifecycleHandler<T> {
 
-    fun observe(
-        subscribe: (Consumer<T>) -> Disposable,
+    fun observeOnNext(
+        flowable: Flowable<T>,
         life: ELife,
         key: String = ""
     ): SavedStateRegistryOwner.((T) -> Unit) -> Unit
 
-    fun observeOnNext(
-        subscribe: (Consumer<T>) -> Disposable,
-        life: ELife,
-        key: String = ""
-    ): SavedStateRegistryOwner.(Consumer<T>) -> Unit
-
     fun observeOnNextOnError(
-        subscribe: (Consumer<T>, Consumer<Throwable>) -> Disposable,
+        flowable: Flowable<T>,
         life: ELife,
         key: String = ""
-    ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>) -> Unit
+    ): SavedStateRegistryOwner.((T) -> Unit, (Throwable) -> Unit) -> Unit
 
     fun observeOnNextOnErrorOnComplete(
-        subscribe: (Consumer<T>, Consumer<Throwable>, Action) -> Disposable,
+        flowable: Flowable<T>,
         life: ELife,
         key: String = ""
-    ): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit
-
-    fun observeOnNextOnErrorOnCompleteOnSubscribe(
-        subscribe: (
-            Consumer<T>,
-            Consumer<Throwable>,
-            Action,
-            Consumer<Subscription>
-        ) -> Disposable,
-        life: ELife,
-        key: String = ""
-    ): SavedStateRegistryOwner.(
-        Consumer<T>,
-        Consumer<Throwable>,
-        Action,
-        Consumer<Subscription>
-    ) -> Unit
-
-    fun observeOnNextOnErrorOnCompleteOnDisposable(
-        subscribe: (
-            Consumer<T>,
-            Consumer<Throwable>,
-            Action,
-            Consumer<Disposable>
-        ) -> Disposable,
-        life: ELife,
-        key: String = ""
-    ): SavedStateRegistryOwner.(
-        Consumer<T>,
-        Consumer<Throwable>,
-        Action,
-        Consumer<Disposable>
-    ) -> Unit
+    ): SavedStateRegistryOwner.((T) -> Unit, (Throwable) -> Unit, () -> Unit) -> Unit
 }

@@ -16,85 +16,21 @@
 package com.github.hadilq.rxlifecyclehandler
 
 import com.github.hadilq.androidlifecyclehandler.Life
+import io.reactivex.Flowable
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Action
-import io.reactivex.functions.Consumer
-import org.reactivestreams.Subscription
 
-sealed class Entry<T> : Life {
+class Entry(val subscribe: () -> Disposable) : Life {
 
-    protected var disposable: Disposable? = null
+    private var disposable: Disposable? = null
+
+    override fun onBorn() {
+        disposable = subscribe()
+    }
 
     override fun onDie() {
         disposable?.dispose()
         disposable = null
     }
-
-    class ObserveEntry<T>(val fn: (T) -> Unit, val subscribe: (Consumer<T>) -> Disposable) :
-        Entry<T>() {
-
-        override fun onBorn() {
-            disposable = subscribe(Consumer { fn(it) })
-        }
-    }
-
-    class OnNextEntry<T>(
-        private val onNext: Consumer<T>,
-        val subscribe: (Consumer<T>) -> Disposable
-    ) :
-        Entry<T>() {
-
-        override fun onBorn() {
-            disposable = subscribe(onNext)
-        }
-    }
-
-    class OnNextOnErrorEntry<T>(
-        private val onNext: Consumer<T>,
-        private val onError: Consumer<Throwable>,
-        val subscribe: (Consumer<T>, Consumer<Throwable>) -> Disposable
-    ) : Entry<T>() {
-
-        override fun onBorn() {
-            disposable = subscribe(onNext, onError)
-        }
-    }
-
-    class OnNextOnErrorOnCompleteEntry<T>(
-        private val onNext: Consumer<T>,
-        private val onError: Consumer<Throwable>,
-        private val onComplete: Action,
-        val subscribe: (Consumer<T>, Consumer<Throwable>, Action) -> Disposable
-    ) : Entry<T>() {
-
-        override fun onBorn() {
-            disposable = subscribe(onNext, onError, onComplete)
-        }
-    }
-
-    class OnNextOnErrorOnCompleteOnSubscribeEntry<T>(
-        private val onNext: Consumer<T>,
-        private val onError: Consumer<Throwable>,
-        private val onComplete: Action,
-        private val onSubscribe: Consumer<Subscription>,
-        val subscribe: (Consumer<T>, Consumer<Throwable>, Action, Consumer<Subscription>) -> Disposable
-    ) : Entry<T>() {
-
-        override fun onBorn() {
-            disposable = subscribe(onNext, onError, onComplete, onSubscribe)
-        }
-    }
-
-    class OnNextOnErrorOnCompleteOnDisposableEntry<T>(
-        private val onNext: Consumer<T>,
-        private val onError: Consumer<Throwable>,
-        private val onComplete: Action,
-        private val onSubscribe: Consumer<Disposable>,
-        val subscribe: (Consumer<T>, Consumer<Throwable>, Action, Consumer<Disposable>) -> Disposable
-    ) : Entry<T>() {
-
-        override fun onBorn() {
-            disposable = subscribe(onNext, onError, onComplete, onSubscribe)
-        }
-    }
 }
+
+fun <T> Flowable<T>.toLife() = Entry() { subscribe() }

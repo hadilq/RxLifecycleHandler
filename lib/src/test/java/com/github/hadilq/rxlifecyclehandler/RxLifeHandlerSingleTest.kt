@@ -16,7 +16,6 @@
 package com.github.hadilq.rxlifecyclehandler
 
 import io.reactivex.Single
-import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 import org.hamcrest.core.Is.`is`
 import org.junit.Assert.assertThat
@@ -36,10 +35,10 @@ class RxLifeHandlerSingleTest {
     private lateinit var observer: (String) -> Unit
 
     @Mock
-    private lateinit var onNext: Consumer<String>
+    private lateinit var onNext: (String) -> Unit
 
     @Mock
-    private lateinit var onError: Consumer<Throwable>
+    private lateinit var onError: (Throwable) -> Unit
 
     private lateinit var publisher: PublishSubject<String>
     private lateinit var single: Single<String>

@@ -16,6 +16,7 @@
 package com.github.hadilq.rxlifecyclehandler
 
 import androidx.savedstate.SavedStateRegistryOwner
+import io.reactivex.BackpressureStrategy
 import io.reactivex.subjects.Subject
 import kotlin.reflect.KClass
 
@@ -30,7 +31,8 @@ class SubjectExtendedLifecycleAwareImpl<T : Any>(
 ) : AbsExtendedLifecycleAware<T>(clazz) {
 
     override fun observe(): SavedStateRegistryOwner.((T) -> Unit) -> Unit =
-        handler.observe({ subject.doOnNext { value -> cache(value) }.subscribe(it) }, this, key)
+        handler.observeOnNext(subject.doOnNext { value -> cache(value) }
+            .toFlowable(BackpressureStrategy.DROP), this, key)
 
     override fun <R> emit(value: R) {
         @Suppress("UNCHECKED_CAST")

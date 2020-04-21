@@ -19,13 +19,8 @@ package com.github.hadilq.rxlifecyclehandler
 
 import androidx.lifecycle.LifecycleOwner
 import com.github.hadilq.androidlifecyclehandler.AndroidLifeHandlerImpl
-import io.reactivex.Flowable
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.*
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Action
-import io.reactivex.functions.Consumer
 import io.reactivex.processors.FlowableProcessor
 import io.reactivex.subjects.Subject
 import org.reactivestreams.Subscription
@@ -51,7 +46,7 @@ import org.reactivestreams.Subscription
  */
 fun <T> Flowable<T>.observe(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.((T) -> Unit) -> Unit = handler.observe(this::subscribe)
+): LifecycleOwner.((T) -> Unit) -> Unit = handler.observeOnNext(this)
 
 /***
  * Creates a handler to sync the subscription.
@@ -62,7 +57,7 @@ fun <T> Flowable<T>.observe(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (flowable.observeOnNext())(Consumer(::handleString))
+ *       (flowable.observeOnNext())(::handleString)
  *   }
  * }
  *
@@ -74,7 +69,7 @@ fun <T> Flowable<T>.observe(
  */
 fun <T> Flowable<T>.observeOnNext(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.(Consumer<T>) -> Unit = handler.observeOnNext(this::subscribe)
+): LifecycleOwner.((T) -> Unit) -> Unit = handler.observeOnNext(this)
 
 /***
  * Creates a handler to sync the subscription.
@@ -85,7 +80,7 @@ fun <T> Flowable<T>.observeOnNext(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (flowable.observeOnNextOnError())(Consumer(::handleString), Consumer(::handleError))
+ *       (flowable.observeOnNextOnError())(::handleString, ::handleError)
  *   }
  * }
  *
@@ -97,8 +92,8 @@ fun <T> Flowable<T>.observeOnNext(
  */
 fun <T> Flowable<T>.observeOnNextOnError(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
-    handler.observeOnNextOnError(this::subscribe)
+): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit) -> Unit =
+    handler.observeOnNextOnError(this)
 
 /***
  * Creates a handler to sync the subscription.
@@ -110,9 +105,9 @@ fun <T> Flowable<T>.observeOnNextOnError(
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
  *       (flowable.observeOnNextOnErrorOnComplete())(
- *           Consumer(::handleString),
- *           Consumer(::handleError),
- *           Action(::handleComplete)
+ *           ::handleString,
+ *           ::handleError,
+ *           ::handleComplete
  *       )
  *   }
  * }
@@ -125,37 +120,8 @@ fun <T> Flowable<T>.observeOnNextOnError(
  */
 fun <T> Flowable<T>.observeOnNextOnErrorOnComplete(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit =
-    handler.observeOnNextOnErrorOnComplete(this::subscribe)
-
-/***
- * Creates a handler to sync the subscription.
- *
- * Example of use:
- * ```
- * class MyAndroidActivity : ComponentActivity {
- *
- *   override fun onCreate(savedInstanceState: Bundle?) {
- *
- *       (flowable.observeOnNextOnErrorOnCompleteOnSubscribe())(
- *           Consumer(::handleString),
- *           Consumer(::handleError),
- *           Action(::handleComplete),
- *           Consumer(::handleSubscription)
- *       )
- *   }
- * }
- *
- * ```
- *
- * The [Flowable] is an upstream.
- * The [handler] is to help you with dependency inversion principle.
- * The [LifecycleOwner] is Activity or Fragment
- */
-fun <T> Flowable<T>.observeOnNextOnErrorOnCompleteOnSubscribe(
-    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action, Consumer<Subscription>) -> Unit =
-    handler.observeOnNextOnErrorOnCompleteOnSubscribe(this::subscribe)
+): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit, () -> Unit) -> Unit =
+    handler.observeOnNextOnErrorOnComplete(this)
 
 /***
  * Creates a handler to sync the subscription.
@@ -178,7 +144,7 @@ fun <T> Flowable<T>.observeOnNextOnErrorOnCompleteOnSubscribe(
  */
 fun <T> Maybe<T>.observe(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.((T) -> Unit) -> Unit = handler.observe(this::subscribe)
+): LifecycleOwner.((T) -> Unit) -> Unit = handler.observeOnNext(toFlowable())
 
 /***
  * Creates a handler to sync the subscription.
@@ -189,7 +155,7 @@ fun <T> Maybe<T>.observe(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (maybe.observeOnNext())(Consumer(::handleString))
+ *       (maybe.observeOnNext())(::handleString)
  *   }
  * }
  *
@@ -201,7 +167,7 @@ fun <T> Maybe<T>.observe(
  */
 fun <T> Maybe<T>.observeOnNext(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.(Consumer<T>) -> Unit = handler.observeOnNext(this::subscribe)
+): LifecycleOwner.((T) -> Unit) -> Unit = handler.observeOnNext(toFlowable())
 
 /***
  * Creates a handler to sync the subscription.
@@ -212,7 +178,7 @@ fun <T> Maybe<T>.observeOnNext(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (maybe.observeOnNextOnError())(Consumer(::handleString), Consumer(::handleError))
+ *       (maybe.observeOnNextOnError())(::handleString, ::handleError)
  *   }
  * }
  *
@@ -224,8 +190,8 @@ fun <T> Maybe<T>.observeOnNext(
  */
 fun <T> Maybe<T>.observeOnNextOnError(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
-    handler.observeOnNextOnError(this::subscribe)
+): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit) -> Unit =
+    handler.observeOnNextOnError(toFlowable())
 
 /***
  * Creates a handler to sync the subscription.
@@ -237,9 +203,9 @@ fun <T> Maybe<T>.observeOnNextOnError(
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
  *       (maybe.observeOnNextOnErrorOnComplete())(
- *           Consumer(::handleString),
- *           Consumer(::handleError),
- *           Action(::handleComplete)
+ *           ::handleString,
+ *           ::handleError,
+ *           ::handleComplete
  *       )
  *   }
  * }
@@ -252,8 +218,8 @@ fun <T> Maybe<T>.observeOnNextOnError(
  */
 fun <T> Maybe<T>.observeOnNextOnErrorOnComplete(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit =
-    handler.observeOnNextOnErrorOnComplete(this::subscribe)
+): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit, () -> Unit) -> Unit =
+    handler.observeOnNextOnErrorOnComplete(toFlowable())
 
 /***
  * Creates a handler to sync the subscription.
@@ -276,7 +242,8 @@ fun <T> Maybe<T>.observeOnNextOnErrorOnComplete(
  */
 fun <T> Observable<T>.observe(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.((T) -> Unit) -> Unit = handler.observe(this::subscribe)
+): LifecycleOwner.((T) -> Unit) -> Unit =
+    handler.observeOnNext(toFlowable(BackpressureStrategy.DROP))
 
 /***
  * Creates a handler to sync the subscription.
@@ -287,7 +254,7 @@ fun <T> Observable<T>.observe(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (observable.observeOnNext())(Consumer(::handleString))
+ *       (observable.observeOnNext())(::handleString)
  *   }
  * }
  *
@@ -299,7 +266,8 @@ fun <T> Observable<T>.observe(
  */
 fun <T> Observable<T>.observeOnNext(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.(Consumer<T>) -> Unit = handler.observeOnNext(this::subscribe)
+): LifecycleOwner.((T) -> Unit) -> Unit =
+    handler.observeOnNext(toFlowable(BackpressureStrategy.DROP))
 
 /***
  * Creates a handler to sync the subscription.
@@ -310,7 +278,7 @@ fun <T> Observable<T>.observeOnNext(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (observable.observeOnNextOnError())(Consumer(::handleString), Consumer(::handleError))
+ *       (observable.observeOnNextOnError())(::handleString, ::handleError)
  *   }
  * }
  *
@@ -322,8 +290,8 @@ fun <T> Observable<T>.observeOnNext(
  */
 fun <T> Observable<T>.observeOnNextOnError(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
-    handler.observeOnNextOnError(this::subscribe)
+): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit) -> Unit =
+    handler.observeOnNextOnError(toFlowable(BackpressureStrategy.DROP))
 
 /***
  * Creates a handler to sync the subscription.
@@ -335,9 +303,9 @@ fun <T> Observable<T>.observeOnNextOnError(
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
  *       (observable.observeOnNextOnErrorOnComplete())(
- *           Consumer(::handleString),
- *           Consumer(::handleError),
- *           Action(::handleComplete)
+ *           ::handleString,
+ *           ::handleError,
+ *           ::handleComplete
  *       )
  *   }
  * }
@@ -350,37 +318,8 @@ fun <T> Observable<T>.observeOnNextOnError(
  */
 fun <T> Observable<T>.observeOnNextOnErrorOnComplete(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit =
-    handler.observeOnNextOnErrorOnComplete(this::subscribe)
-
-/***
- * Creates a handler to sync the subscription.
- *
- * Example of use:
- * ```
- * class MyAndroidActivity : ComponentActivity {
- *
- *   override fun onCreate(savedInstanceState: Bundle?) {
- *
- *       (observable.observeOnNextOnErrorOnCompleteOnSubscribe())(
- *           Consumer(::handleString),
- *           Consumer(::handleError),
- *           Action(::handleComplete),
- *           Consumer(::handleSubscription)
- *       )
- *   }
- * }
- *
- * ```
- *
- * The [Observable] is an upstream.
- * The [handler] is to help you with dependency inversion principle.
- * The [LifecycleOwner] is Activity or Fragment
- */
-fun <T> Observable<T>.observeOnNextOnErrorOnCompleteOnSubscribe(
-    handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action, Consumer<Disposable>) -> Unit =
-    handler.observeOnNextOnErrorOnCompleteOnDisposable(this::subscribe)
+): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit, () -> Unit) -> Unit =
+    handler.observeOnNextOnErrorOnComplete(toFlowable(BackpressureStrategy.DROP))
 
 /***
  * Creates a handler to sync the subscription.
@@ -403,7 +342,7 @@ fun <T> Observable<T>.observeOnNextOnErrorOnCompleteOnSubscribe(
  */
 fun <T> Single<T>.observe(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.((T) -> Unit) -> Unit = handler.observe(this::subscribe)
+): LifecycleOwner.((T) -> Unit) -> Unit = handler.observeOnNext(toFlowable())
 
 /***
  * Creates a handler to sync the subscription.
@@ -414,7 +353,7 @@ fun <T> Single<T>.observe(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (single.observeOnNext())(Consumer(::handleString))
+ *       (single.observeOnNext())(::handleString)
  *   }
  * }
  *
@@ -426,7 +365,7 @@ fun <T> Single<T>.observe(
  */
 fun <T> Single<T>.observeOnNext(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.(Consumer<T>) -> Unit = handler.observeOnNext(this::subscribe)
+): LifecycleOwner.((T) -> Unit) -> Unit = handler.observeOnNext(toFlowable())
 
 /***
  * Creates a handler to sync the subscription.
@@ -437,7 +376,7 @@ fun <T> Single<T>.observeOnNext(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (single.observeOnNextOnError())(Consumer(::handleString), Consumer(::handleError))
+ *       (single.observeOnNextOnError())(::handleString, ::handleError)
  *   }
  * }
  *
@@ -449,8 +388,8 @@ fun <T> Single<T>.observeOnNext(
  */
 fun <T> Single<T>.observeOnNextOnError(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(AndroidLifeHandlerImpl())
-): LifecycleOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
-    handler.observeOnNextOnError(this::subscribe)
+): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit) -> Unit =
+    handler.observeOnNextOnError(toFlowable())
 
 /***
  * To wrap up the [Subject] and hide it from the [LifecycleOwner], which is an
@@ -467,7 +406,7 @@ fun <T> Single<T>.observeOnNextOnError(
  *
  * The [handler] to help you with dependency inversion principle.
  */
-fun <T : Any> Subject<T>.toLifecycleAware(
+fun <T : Any> Subject<T>.toLifeAware(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(
         AndroidLifeHandlerImpl()
     )
@@ -488,7 +427,7 @@ fun <T : Any> Subject<T>.toLifecycleAware(
  *
  * The [handler] to help you with dependency inversion principle.
  */
-fun <T : Any> FlowableProcessor<T>.toLifecycleAware(
+fun <T : Any> FlowableProcessor<T>.toLifeAware(
     handler: RxLifeHandler<T> = RxLifeHandlerImpl(
         AndroidLifeHandlerImpl()
     )

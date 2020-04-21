@@ -3,8 +3,7 @@ package com.github.hadilq.rxlifecyclehandler
 import android.os.Bundle
 import android.os.Parcelable
 import com.nhaarman.mockito_kotlin.*
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
+import io.reactivex.Flowable
 import io.reactivex.processors.BehaviorProcessor
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -316,16 +315,16 @@ class ProcessorExtendedLifecycleAwareImplTest {
     ) {
         val publisher = BehaviorProcessor.create<T>()
         val handler = mock<RxELifecycleHandler<T>>()
-        val lifecycleAware = publisher.toExtendedLifecycleAware(KEY, handler)
+        val lifecycleAware = publisher.toELifeAware(KEY, handler)
         lifecycleAware.observe()
 
         lifecycleAware.onBorn(Bundle().apply { putter(value) })
 
         // To cache a value
-        val captor = argumentCaptor<(Consumer<T>) -> Disposable>()
-        verify(handler).observe(captor.capture(), eq(lifecycleAware), eq(KEY))
+        val captor = argumentCaptor<Flowable<T>>()
+        verify(handler).observeOnNext(captor.capture(), eq(lifecycleAware), eq(KEY))
         var result: T? = null
-        captor.firstValue.invoke(Consumer { result = it })
+        captor.firstValue.subscribe { result = it }
 
         if (supportAutoBoxing) {
             assert(result == value)
@@ -341,15 +340,15 @@ class ProcessorExtendedLifecycleAwareImplTest {
     ) {
         val publisher = BehaviorProcessor.create<T>()
         val handler = mock<RxELifecycleHandler<T>>()
-        val lifecycleAware = publisher.toExtendedLifecycleAware(KEY, handler)
+        val lifecycleAware = publisher.toELifeAware(KEY, handler)
         lifecycleAware.observe()
 
         publisher.onNext(value)
 
         // To cache a value
-        val captor = argumentCaptor<(Consumer<T>) -> Disposable>()
-        verify(handler).observe(captor.capture(), eq(lifecycleAware), eq(KEY))
-        captor.firstValue.invoke(Consumer { })
+        val captor = argumentCaptor<Flowable<T>>()
+        verify(handler).observeOnNext(captor.capture(), eq(lifecycleAware), eq(KEY))
+        captor.firstValue.subscribe()
 
         val result = lifecycleAware.onDie()
 
@@ -364,11 +363,11 @@ class ProcessorExtendedLifecycleAwareImplTest {
     fun `in case of processor, calling observe would call handler observe`() {
         val publisher = BehaviorProcessor.create<String>()
         val handler = mock<RxELifecycleHandler<String>>()
-        val lifecycleAware = publisher.toExtendedLifecycleAware(KEY, handler)
+        val lifecycleAware = publisher.toELifeAware(KEY, handler)
 
         lifecycleAware.observe()
 
-        verify(handler).observe(any(), any(), eq(KEY))
+        verify(handler).observeOnNext(any(), any(), eq(KEY))
     }
 
     data class UnsupportedData(val unknown: Boolean)

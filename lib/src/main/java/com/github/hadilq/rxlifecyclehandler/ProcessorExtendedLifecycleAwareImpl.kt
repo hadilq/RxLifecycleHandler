@@ -30,7 +30,7 @@ class ProcessorExtendedLifecycleAwareImpl<T : Any>(
 ) : AbsExtendedLifecycleAware<T>(clazz) {
 
     override fun observe(): SavedStateRegistryOwner.((T) -> Unit) -> Unit =
-        handler.observe({ processor.doOnNext { value -> cache(value) }.subscribe(it) }, this, key)
+        handler.observeOnNext(processor.doOnNext { value -> cache(value) }, this, key)
 
     override fun <R> emit(value: R) {
         @Suppress("UNCHECKED_CAST")

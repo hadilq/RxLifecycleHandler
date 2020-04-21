@@ -17,8 +17,6 @@ package com.github.hadilq.rxlifecyclehandler
 
 import com.github.hadilq.androidlifecyclehandler.ELife
 import io.reactivex.Maybe
-import io.reactivex.functions.Action
-import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 import org.hamcrest.core.Is.`is`
 import org.junit.Assert.assertThat
@@ -38,13 +36,13 @@ class RxELifecycleHandlerMaybeTest {
     private lateinit var observer: (String) -> Unit
 
     @Mock
-    private lateinit var onNext: Consumer<String>
+    private lateinit var onNext: (String) -> Unit
 
     @Mock
-    private lateinit var onError: Consumer<Throwable>
+    private lateinit var onError: (Throwable) -> Unit
 
     @Mock
-    private lateinit var onComplete: Action
+    private lateinit var onComplete: () -> Unit
 
     @Mock
     private lateinit var life: ELife

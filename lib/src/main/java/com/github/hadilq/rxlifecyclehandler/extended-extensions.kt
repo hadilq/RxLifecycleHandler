@@ -20,16 +20,9 @@ package com.github.hadilq.rxlifecyclehandler
 import androidx.savedstate.SavedStateRegistryOwner
 import com.github.hadilq.androidlifecyclehandler.AndroidELifeHandlerImpl
 import com.github.hadilq.androidlifecyclehandler.ELife
-import io.reactivex.Flowable
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Action
-import io.reactivex.functions.Consumer
+import io.reactivex.*
 import io.reactivex.processors.FlowableProcessor
 import io.reactivex.subjects.Subject
-import org.reactivestreams.Subscription
 
 /***
  * Creates a handler to sync the subscription.
@@ -58,7 +51,7 @@ fun <T> Flowable<T>.observe(
     handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
         AndroidELifeHandlerImpl()
     )
-): SavedStateRegistryOwner.((T) -> Unit) -> Unit = handler.observe(this::subscribe, life, key)
+): SavedStateRegistryOwner.((T) -> Unit) -> Unit = handler.observeOnNext(this, life, key)
 
 /***
  * Creates a handler to sync the subscription.
@@ -69,7 +62,7 @@ fun <T> Flowable<T>.observe(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (flowable.observeOnNext(extendedLife, KEY))(Consumer(::handleString))
+ *       (flowable.observeOnNext(extendedLife, KEY))(::handleString)
  *   }
  * }
  *
@@ -87,7 +80,7 @@ fun <T> Flowable<T>.observeOnNext(
     handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
         AndroidELifeHandlerImpl()
     )
-): SavedStateRegistryOwner.(Consumer<T>) -> Unit = handler.observeOnNext(this::subscribe, life, key)
+): SavedStateRegistryOwner.((T) -> Unit) -> Unit = handler.observeOnNext(this, life, key)
 
 /***
  * Creates a handler to sync the subscription.
@@ -98,7 +91,7 @@ fun <T> Flowable<T>.observeOnNext(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (flowable.observeOnNextOnError(extendedLife, KEY))(Consumer(::handleString), Consumer(::handleError))
+ *       (flowable.observeOnNextOnError(extendedLife, KEY))(::handleString, ::handleError)
  *   }
  * }
  *
@@ -116,8 +109,8 @@ fun <T> Flowable<T>.observeOnNextOnError(
     handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
         AndroidELifeHandlerImpl()
     )
-): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
-    handler.observeOnNextOnError(this::subscribe, life, key)
+): SavedStateRegistryOwner.((T) -> Unit, (Throwable) -> Unit) -> Unit =
+    handler.observeOnNextOnError(this, life, key)
 
 /***
  * Creates a handler to sync the subscription.
@@ -129,9 +122,9 @@ fun <T> Flowable<T>.observeOnNextOnError(
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
  *       (flowable.observeOnNextOnErrorOnComplete(extendedLife, KEY))(
- *           Consumer(::handleString),
- *           Consumer(::handleError),
- *           Action(::handleComplete)
+ *           ::handleString,
+ *           ::handleError,
+ *           ::handleComplete
  *       )
  *   }
  * }
@@ -150,43 +143,8 @@ fun <T> Flowable<T>.observeOnNextOnErrorOnComplete(
     handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
         AndroidELifeHandlerImpl()
     )
-): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit =
-    handler.observeOnNextOnErrorOnComplete(this::subscribe, life, key)
-
-/***
- * Creates a handler to sync the subscription.
- *
- * Example of use:
- * ```
- * class MyAndroidActivity : ComponentActivity {
- *
- *   override fun onCreate(savedInstanceState: Bundle?) {
- *
- *       (flowable.observeOnNextOnErrorOnCompleteOnSubscribe(extendedLife, KEY))(
- *           Consumer(::handleString),
- *           Consumer(::handleError),
- *           Action(::handleComplete),
- *           Consumer(::handleSubscription)
- *       )
- *   }
- * }
- *
- * ```
- *
- * The [Flowable] is an upstream.
- * The [life] is for handling the bundle in [ELife].
- * The [key] is the key which returned saved state will be associated with.
- * The [handler] is to help you with dependency inversion principle.
- * The [SavedStateRegistryOwner] is Activity or Fragment
- */
-fun <T> Flowable<T>.observeOnNextOnErrorOnCompleteOnSubscribe(
-    life: ELife,
-    key: String = "",
-    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
-        AndroidELifeHandlerImpl()
-    )
-): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>, Action, Consumer<Subscription>) -> Unit =
-    handler.observeOnNextOnErrorOnCompleteOnSubscribe(this::subscribe, life, key)
+): SavedStateRegistryOwner.((T) -> Unit, (Throwable) -> Unit, () -> Unit) -> Unit =
+    handler.observeOnNextOnErrorOnComplete(this, life, key)
 
 /***
  * Creates a handler to sync the subscription.
@@ -215,7 +173,7 @@ fun <T> Maybe<T>.observe(
     handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
         AndroidELifeHandlerImpl()
     )
-): SavedStateRegistryOwner.((T) -> Unit) -> Unit = handler.observe(this::subscribe, life, key)
+): SavedStateRegistryOwner.((T) -> Unit) -> Unit = handler.observeOnNext(toFlowable(), life, key)
 
 /***
  * Creates a handler to sync the subscription.
@@ -226,7 +184,7 @@ fun <T> Maybe<T>.observe(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (maybe.observeOnNext(extendedLife, KEY))(Consumer(::handleString))
+ *       (maybe.observeOnNext(extendedLife, KEY))(::handleString)
  *   }
  * }
  *
@@ -244,7 +202,7 @@ fun <T> Maybe<T>.observeOnNext(
     handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
         AndroidELifeHandlerImpl()
     )
-): SavedStateRegistryOwner.(Consumer<T>) -> Unit = handler.observeOnNext(this::subscribe, life, key)
+): SavedStateRegistryOwner.((T) -> Unit) -> Unit = handler.observeOnNext(toFlowable(), life, key)
 
 /***
  * Creates a handler to sync the subscription.
@@ -255,7 +213,7 @@ fun <T> Maybe<T>.observeOnNext(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (maybe.observeOnNextOnError(extendedLife, KEY))(Consumer(::handleString), Consumer(::handleError))
+ *       (maybe.observeOnNextOnError(extendedLife, KEY))(::handleString, ::handleError)
  *   }
  * }
  *
@@ -273,8 +231,8 @@ fun <T> Maybe<T>.observeOnNextOnError(
     handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
         AndroidELifeHandlerImpl()
     )
-): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
-    handler.observeOnNextOnError(this::subscribe, life, key)
+): SavedStateRegistryOwner.((T) -> Unit, (Throwable) -> Unit) -> Unit =
+    handler.observeOnNextOnError(toFlowable(), life, key)
 
 /***
  * Creates a handler to sync the subscription.
@@ -286,9 +244,9 @@ fun <T> Maybe<T>.observeOnNextOnError(
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
  *       (maybe.observeOnNextOnErrorOnComplete(extendedLife, KEY))(
- *           Consumer(::handleString),
- *           Consumer(::handleError),
- *           Action(::handleComplete)
+ *           ::handleString,
+ *           ::handleError,
+ *           ::handleComplete
  *       )
  *   }
  * }
@@ -307,8 +265,8 @@ fun <T> Maybe<T>.observeOnNextOnErrorOnComplete(
     handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
         AndroidELifeHandlerImpl()
     )
-): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit =
-    handler.observeOnNextOnErrorOnComplete(this::subscribe, life, key)
+): SavedStateRegistryOwner.((T) -> Unit, (Throwable) -> Unit, () -> Unit) -> Unit =
+    handler.observeOnNextOnErrorOnComplete(toFlowable(), life, key)
 
 /***
  * Creates a handler to sync the subscription.
@@ -337,7 +295,8 @@ fun <T> Observable<T>.observe(
     handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
         AndroidELifeHandlerImpl()
     )
-): SavedStateRegistryOwner.((T) -> Unit) -> Unit = handler.observe(this::subscribe, life, key)
+): SavedStateRegistryOwner.((T) -> Unit) -> Unit =
+    handler.observeOnNext(toFlowable(BackpressureStrategy.DROP), life, key)
 
 /***
  * Creates a handler to sync the subscription.
@@ -348,7 +307,7 @@ fun <T> Observable<T>.observe(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (observable.observeOnNext(extendedLife, KEY))(Consumer(::handleString))
+ *       (observable.observeOnNext(extendedLife, KEY))(::handleString)
  *   }
  * }
  *
@@ -366,7 +325,8 @@ fun <T> Observable<T>.observeOnNext(
     handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
         AndroidELifeHandlerImpl()
     )
-): SavedStateRegistryOwner.(Consumer<T>) -> Unit = handler.observeOnNext(this::subscribe, life, key)
+): SavedStateRegistryOwner.((T) -> Unit) -> Unit =
+    handler.observeOnNext(toFlowable(BackpressureStrategy.DROP), life, key)
 
 /***
  * Creates a handler to sync the subscription.
@@ -377,7 +337,7 @@ fun <T> Observable<T>.observeOnNext(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (observable.observeOnNextOnError(extendedLife, KEY))(Consumer(::handleString), Consumer(::handleError))
+ *       (observable.observeOnNextOnError(extendedLife, KEY))(::handleString, ::handleError)
  *   }
  * }
  *
@@ -395,8 +355,8 @@ fun <T> Observable<T>.observeOnNextOnError(
     handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
         AndroidELifeHandlerImpl()
     )
-): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
-    handler.observeOnNextOnError(this::subscribe, life, key)
+): SavedStateRegistryOwner.((T) -> Unit, (Throwable) -> Unit) -> Unit =
+    handler.observeOnNextOnError(toFlowable(BackpressureStrategy.DROP), life, key)
 
 /***
  * Creates a handler to sync the subscription.
@@ -408,9 +368,9 @@ fun <T> Observable<T>.observeOnNextOnError(
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
  *       (observable.observeOnNextOnErrorOnComplete(extendedLife, KEY))(
- *           Consumer(::handleString),
- *           Consumer(::handleError),
- *           Action(::handleComplete)
+ *           ::handleString,
+ *           ::handleError,
+ *           ::handleComplete
  *       )
  *   }
  * }
@@ -429,43 +389,8 @@ fun <T> Observable<T>.observeOnNextOnErrorOnComplete(
     handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
         AndroidELifeHandlerImpl()
     )
-): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit =
-    handler.observeOnNextOnErrorOnComplete(this::subscribe, life, key)
-
-/***
- * Creates a handler to sync the subscription.
- *
- * Example of use:
- * ```
- * class MyAndroidActivity : ComponentActivity {
- *
- *   override fun onCreate(savedInstanceState: Bundle?) {
- *
- *       (observable.observeOnNextOnErrorOnCompleteOnSubscribe(extendedLife, KEY))(
- *           Consumer(::handleString),
- *           Consumer(::handleError),
- *           Action(::handleComplete),
- *           Consumer(::handleSubscription)
- *       )
- *   }
- * }
- *
- * ```
- *
- * The [Observable] is an upstream.
- * The [life] is for handling the bundle in [ELife].
- * The [key] is the key which returned saved state will be associated with.
- * The [handler] is to help you with dependency inversion principle.
- * The [SavedStateRegistryOwner] is Activity or Fragment
- */
-fun <T> Observable<T>.observeOnNextOnErrorOnCompleteOnSubscribe(
-    life: ELife,
-    key: String = "",
-    handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
-        AndroidELifeHandlerImpl()
-    )
-): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>, Action, Consumer<Disposable>) -> Unit =
-    handler.observeOnNextOnErrorOnCompleteOnDisposable(this::subscribe, life, key)
+): SavedStateRegistryOwner.((T) -> Unit, (Throwable) -> Unit, () -> Unit) -> Unit =
+    handler.observeOnNextOnErrorOnComplete(toFlowable(BackpressureStrategy.DROP), life, key)
 
 /***
  * Creates a handler to sync the subscription.
@@ -494,7 +419,7 @@ fun <T> Single<T>.observe(
     handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
         AndroidELifeHandlerImpl()
     )
-): SavedStateRegistryOwner.((T) -> Unit) -> Unit = handler.observe(this::subscribe, life, key)
+): SavedStateRegistryOwner.((T) -> Unit) -> Unit = handler.observeOnNext(toFlowable(), life, key)
 
 /***
  * Creates a handler to sync the subscription.
@@ -505,7 +430,7 @@ fun <T> Single<T>.observe(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (single.observeOnNext(extendedLife, KEY))(Consumer(::handleString))
+ *       (single.observeOnNext(extendedLife, KEY))(::handleString)
  *   }
  * }
  *
@@ -523,7 +448,7 @@ fun <T> Single<T>.observeOnNext(
     handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
         AndroidELifeHandlerImpl()
     )
-): SavedStateRegistryOwner.(Consumer<T>) -> Unit = handler.observeOnNext(this::subscribe, life, key)
+): SavedStateRegistryOwner.((T) -> Unit) -> Unit = handler.observeOnNext(toFlowable(), life, key)
 
 /***
  * Creates a handler to sync the subscription.
@@ -534,7 +459,7 @@ fun <T> Single<T>.observeOnNext(
  *
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *
- *       (single.observeOnNextOnError(extendedLife, KEY))(Consumer(::handleString), Consumer(::handleError))
+ *       (single.observeOnNextOnError(extendedLife, KEY))(::handleString, ::handleError)
  *   }
  * }
  *
@@ -552,8 +477,8 @@ fun <T> Single<T>.observeOnNextOnError(
     handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
         AndroidELifeHandlerImpl()
     )
-): SavedStateRegistryOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
-    handler.observeOnNextOnError(this::subscribe, life, key)
+): SavedStateRegistryOwner.((T) -> Unit, (Throwable) -> Unit) -> Unit =
+    handler.observeOnNextOnError(toFlowable(), life, key)
 
 /***
  * To wrap up the [Subject] and hide it from the [SavedStateRegistryOwner], which is an
@@ -602,7 +527,7 @@ inline fun <reified T : Any> Subject<T>.toExtendedLifecycleAware(
  * The [key] is the key which returned saved state will be associated with.
  * The [handler] to help you with dependency inversion principle.
  */
-inline fun <reified T : Any> FlowableProcessor<T>.toExtendedLifecycleAware(
+inline fun <reified T : Any> FlowableProcessor<T>.toELifeAware(
     key: String,
     handler: RxELifecycleHandler<T> = RxELifeHandlerImpl(
         AndroidELifeHandlerImpl()

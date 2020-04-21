@@ -15,9 +15,6 @@
  */
 package com.github.hadilq.rxlifecyclehandler
 
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Action
-import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 import org.hamcrest.core.Is.`is`
 import org.junit.Assert.assertThat
@@ -37,16 +34,13 @@ class RxLifeHandlerObservableTest {
     private lateinit var observer: (String) -> Unit
 
     @Mock
-    private lateinit var onNext: Consumer<String>
+    private lateinit var onNext: (String) -> Unit
 
     @Mock
-    private lateinit var onError: Consumer<Throwable>
+    private lateinit var onError: (Throwable) -> Unit
 
     @Mock
-    private lateinit var onComplete: Action
-
-    @Mock
-    private lateinit var onSubscribe: Consumer<Disposable>
+    private lateinit var onComplete: () -> Unit
 
     private lateinit var publisher: PublishSubject<String>
     private lateinit var owner: TestLifecycleOwner
@@ -448,152 +442,4 @@ class RxLifeHandlerObservableTest {
         assertThat(publisher.hasObservers(), `is`(false))
     }
     // region end of OBSERVE ON NEXT ON ERROR ON COMPLETE
-
-    // region OBSERVE ON NEXT ON ERROR ON COMPLETE ON SUBSCRIBE
-    @Test
-    fun `in case of just observeOnNextOnErrorOnCompleteOnSubscribe, observable should not has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        assertThat(publisher.hasObservers(), `is`(false))
-    }
-
-    @Test
-    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then start, observable should has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        owner.start()
-
-        assertThat(publisher.hasObservers(), `is`(true))
-    }
-
-    @Test
-    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then start then stop, observable should not has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        owner.start()
-        owner.stop()
-
-        assertThat(publisher.hasObservers(), `is`(false))
-    }
-
-    @Test
-    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then start then stop then start again, observable should has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        owner.start()
-        owner.stop()
-        owner.start()
-
-        assertThat(publisher.hasObservers(), `is`(true))
-    }
-
-    @Test
-    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then start then destroy, observable should not has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        owner.start()
-        owner.destroy()
-
-        assertThat(publisher.hasObservers(), `is`(false))
-    }
-
-    @Test
-    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then start then destroy then start, which is impossible, observable should not has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        owner.start()
-        owner.destroy()
-        owner.start()
-
-        assertThat(publisher.hasObservers(), `is`(false))
-    }
-
-    @Test
-    fun `in case of destroy then observeOnNextOnErrorOnCompleteOnSubscribe, observable should not has observer`() {
-        owner.destroy()
-
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        assertThat(publisher.hasObservers(), `is`(false))
-    }
-
-    @Test
-    fun `in case of start then observeOnNextOnErrorOnCompleteOnSubscribe, observable should has observer`() {
-        owner.start()
-
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        assertThat(publisher.hasObservers(), `is`(true))
-    }
-
-    @Test
-    fun `in case of start then stop then observeOnNextOnErrorOnCompleteOnSubscribe, observable should not has observer`() {
-        owner.start()
-        owner.stop()
-
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        assertThat(publisher.hasObservers(), `is`(false))
-    }
-
-    @Test
-    fun `in case of start then destroy then observeOnNextOnErrorOnCompleteOnSubscribe, observable should not has observer`() {
-        owner.start()
-        owner.destroy()
-
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        assertThat(publisher.hasObservers(), `is`(false))
-    }
-    // region end of OBSERVE ON NEXT ON ERROR ON COMPLETE ON SUBSCRIBE
 }

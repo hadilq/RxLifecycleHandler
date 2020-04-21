@@ -27,5 +27,5 @@ class ProcessorLifecycleAwareImpl<T : Any>(
 ) : LifecycleAware<T> {
 
     override fun observe(): LifecycleOwner.((T) -> Unit) -> Unit =
-        handler.observe(processor::subscribe)
+        handler.observeOnNext(processor.hide())
 }

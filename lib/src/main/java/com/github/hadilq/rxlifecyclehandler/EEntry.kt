@@ -15,18 +15,30 @@
  */
 package com.github.hadilq.rxlifecyclehandler
 
-import androidx.lifecycle.LifecycleOwner
-import io.reactivex.BackpressureStrategy
-import io.reactivex.subjects.Subject
+import android.os.Bundle
+import com.github.hadilq.androidlifecyclehandler.ELife
+import io.reactivex.Flowable
+import io.reactivex.disposables.Disposable
 
-/***
- * An implementation of [LifecycleAware] for a [Subject].
- */
-class SubjectLifecycleAwareImpl<T : Any>(
-    private val subject: Subject<T>,
-    private val handler: RxLifeHandler<T>
-) : LifecycleAware<T> {
+class EEntry(
+    val life: ELife,
+    val subscribe: () -> Disposable
+) : ELife {
 
-    override fun observe(): LifecycleOwner.((T) -> Unit) -> Unit =
-        handler.observeOnNext(subject.hide().toFlowable(BackpressureStrategy.DROP))
+    private var disposable: Disposable? = null
+
+    override fun onBorn(bundle: Bundle?) {
+        life.onBorn(bundle)
+        disposable = subscribe()
+    }
+
+    override fun onDie(): Bundle {
+        disposable?.dispose()
+        disposable = null
+        return life.onDie()
+    }
 }
+
+fun <T> Flowable<T>.toELife(
+    life: ELife
+) = EEntry(life) { subscribe() }

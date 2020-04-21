@@ -15,8 +15,6 @@
  */
 package com.github.hadilq.rxlifecyclehandler
 
-import io.reactivex.functions.Action
-import io.reactivex.functions.Consumer
 import io.reactivex.processors.PublishProcessor
 import org.hamcrest.core.Is.`is`
 import org.junit.Assert.assertThat
@@ -26,7 +24,6 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.reactivestreams.Subscription
 
 class RxLifeHandlerFlowableTest {
 
@@ -37,16 +34,13 @@ class RxLifeHandlerFlowableTest {
     private lateinit var observer: (String) -> Unit
 
     @Mock
-    private lateinit var onNext: Consumer<String>
+    private lateinit var onNext: (String) -> Unit
 
     @Mock
-    private lateinit var onError: Consumer<Throwable>
+    private lateinit var onError: (Throwable) -> Unit
 
     @Mock
-    private lateinit var onComplete: Action
-
-    @Mock
-    private lateinit var onSubscribe: Consumer<Subscription>
+    private lateinit var onComplete: () -> Unit
 
     private lateinit var publisher: PublishProcessor<String>
     private lateinit var owner: TestLifecycleOwner
@@ -448,142 +442,4 @@ class RxLifeHandlerFlowableTest {
         assertThat(publisher.hasSubscribers(), `is`(false))
     }
     // end of region OBSERVE ON NEXT ON ERROR ON COMPLETE
-
-    // region OBSERVE ON NEXT ON ERROR ON COMPLETE ON SUBSCRIBE
-    @Test
-    fun `in case of just observeOnNextOnErrorOnCompleteOnSubscribe, flowable should not has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        assertThat(publisher.hasSubscribers(), `is`(false))
-    }
-
-    @Test
-    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then start, flowable should has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
-
-        owner.start()
-
-        assertThat(publisher.hasSubscribers(), `is`(true))
-    }
-
-    @Test
-    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then start then stop, flowable should not has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnComplete())(onNext, onError, onComplete)
-
-        owner.start()
-        owner.stop()
-
-        assertThat(publisher.hasSubscribers(), `is`(false))
-    }
-
-    @Test
-    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then start then stop then start again, flowable should has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        owner.start()
-        owner.stop()
-        owner.start()
-
-        assertThat(publisher.hasSubscribers(), `is`(true))
-    }
-
-    @Test
-    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then start then destroy, flowable should not has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        owner.start()
-        owner.destroy()
-
-        assertThat(publisher.hasSubscribers(), `is`(false))
-    }
-
-    @Test
-    fun `in case of observeOnNextOnErrorOnCompleteOnSubscribe then start then destroy then start, which is impossible, flowable should not has observer`() {
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        owner.start()
-        owner.destroy()
-        owner.start()
-
-        assertThat(publisher.hasSubscribers(), `is`(false))
-    }
-
-    @Test
-    fun `in case of destroy then observeOnNextOnErrorOnCompleteOnSubscribe, flowable should not has observer`() {
-        owner.destroy()
-
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        assertThat(publisher.hasSubscribers(), `is`(false))
-    }
-
-    @Test
-    fun `in case of start then observeOnNextOnErrorOnCompleteOnSubscribe, flowable should has observer`() {
-        owner.start()
-
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        assertThat(publisher.hasSubscribers(), `is`(true))
-    }
-
-    @Test
-    fun `in case of start then stop then observeOnNextOnErrorOnCompleteOnSubscribe, flowable should not has observer`() {
-        owner.start()
-        owner.stop()
-
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        assertThat(publisher.hasSubscribers(), `is`(false))
-    }
-
-    @Test
-    fun `in case of start then destroy then observeOnNextOnErrorOnCompleteOnSubscribe, flowable should not has observer`() {
-        owner.start()
-        owner.destroy()
-
-        owner.(publisher.observeOnNextOnErrorOnCompleteOnSubscribe())(
-            onNext,
-            onError,
-            onComplete,
-            onSubscribe
-        )
-
-        assertThat(publisher.hasSubscribers(), `is`(false))
-    }
-    // end of region OBSERVE ON NEXT ON ERROR ON COMPLETE ON SUBSCRIBE
 }

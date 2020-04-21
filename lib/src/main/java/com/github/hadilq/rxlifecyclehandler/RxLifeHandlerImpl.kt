@@ -18,11 +18,7 @@ package com.github.hadilq.rxlifecyclehandler
 import androidx.lifecycle.LifecycleOwner
 import com.github.hadilq.androidlifecyclehandler.AndroidLifeHandler
 import com.github.hadilq.androidlifecyclehandler.LifeSpan
-import com.github.hadilq.rxlifecyclehandler.Entry.*
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Action
-import io.reactivex.functions.Consumer
-import org.reactivestreams.Subscription
+import io.reactivex.Flowable
 
 /***
  * An implementation of [RxLifeHandler].
@@ -30,76 +26,39 @@ import org.reactivestreams.Subscription
 class RxLifeHandlerImpl<T>(private val handler: AndroidLifeHandler) :
     RxLifeHandler<T> {
 
-    override fun observe(
-        subscribe: (Consumer<T>) -> Disposable
-    ): LifecycleOwner.((T) -> Unit) -> Unit = { observer: (T) -> Unit ->
-        observeEntry(ObserveEntry(observer, subscribe))
-    }
-
     override fun observeOnNext(
-        subscribe: (Consumer<T>) -> Disposable
-    ): LifecycleOwner.(Consumer<T>) -> Unit = { onNext: Consumer<T> ->
-        observeEntry(OnNextEntry(onNext, subscribe))
-    }
+        flowable: Flowable<T>
+    ): LifecycleOwner.((T) -> Unit) -> Unit =
+        { onNext: (T) -> Unit ->
+            observeEntry(flowable.doOnNext(onNext).toLife())
+        }
 
     override fun observeOnNextOnError(
-        subscribe: (Consumer<T>, Consumer<Throwable>) -> Disposable
-    ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>) -> Unit =
-        { onNext: Consumer<T>, onError: Consumer<Throwable> ->
-            observeEntry(OnNextOnErrorEntry(onNext, onError, subscribe))
+        flowable: Flowable<T>
+    ): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit) -> Unit =
+        { onNext: (T) -> Unit, onError: (Throwable) -> Unit ->
+            observeEntry(
+                flowable
+                    .doOnNext(onNext)
+                    .doOnError(onError)
+                    .toLife()
+            )
         }
 
     override fun observeOnNextOnErrorOnComplete(
-        subscribe: (Consumer<T>, Consumer<Throwable>, Action) -> Disposable
-    ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action) -> Unit =
-        { onNext: Consumer<T>,
-          onError: Consumer<Throwable>,
-          onComplete: Action ->
-            observeEntry(OnNextOnErrorOnCompleteEntry(onNext, onError, onComplete, subscribe))
-        }
-
-    override fun observeOnNextOnErrorOnCompleteOnSubscribe(
-        subscribe: (
-            Consumer<T>,
-            Consumer<Throwable>,
-            Action,
-            Consumer<Subscription>
-        ) -> Disposable
-    ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action, Consumer<Subscription>) -> Unit =
-        { onNext: Consumer<T>,
-          onError: Consumer<Throwable>,
-          onComplete: Action,
-          onSubscribe: Consumer<Subscription> ->
+        flowable: Flowable<T>
+    ): LifecycleOwner.((T) -> Unit, (Throwable) -> Unit, () -> Unit) -> Unit =
+        { onNext: (T) -> Unit, onError: (Throwable) -> Unit, onComplete: () -> Unit ->
             observeEntry(
-                OnNextOnErrorOnCompleteOnSubscribeEntry(
-                    onNext,
-                    onError,
-                    onComplete,
-                    onSubscribe,
-                    subscribe
-                )
+                flowable
+                    .doOnNext(onNext)
+                    .doOnError(onError)
+                    .doOnComplete(onComplete)
+                    .toLife()
             )
         }
 
-    override fun observeOnNextOnErrorOnCompleteOnDisposable(
-        subscribe: (Consumer<T>, Consumer<Throwable>, Action, Consumer<Disposable>) -> Disposable
-    ): LifecycleOwner.(Consumer<T>, Consumer<Throwable>, Action, Consumer<Disposable>) -> Unit =
-        { onNext: Consumer<T>,
-          onError: Consumer<Throwable>,
-          onComplete: Action,
-          onSubscribe: Consumer<Disposable> ->
-            observeEntry(
-                OnNextOnErrorOnCompleteOnDisposableEntry(
-                    onNext,
-                    onError,
-                    onComplete,
-                    onSubscribe,
-                    subscribe
-                )
-            )
-        }
-
-    private fun LifecycleOwner.observeEntry(entry: Entry<T>) {
+    private fun LifecycleOwner.observeEntry(entry: Entry) {
         handler.register(this, entry, LifeSpan.STARTED)
     }
 }
