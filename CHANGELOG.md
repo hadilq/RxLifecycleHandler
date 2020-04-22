@@ -1,12 +1,11 @@
 Changelog
 =========
 
-0.3.3
+0.3.0
 -----
 
-_2020-04-15_
+_2020-04-22_
 
-Add `Flow.toLife` and `Flow.toELife` extension functions.
 Renaming:
  - `AndroidExtendedLifecycleHandlerImpl` to `AndroidELifecHandlerImpl`
  - `AndroidExtendedLifecycleHandler` to `AndroidELifecHandler`
@@ -31,6 +30,7 @@ Adding:
  - `LifeSpan#USER_FLOW`
  - `LifeStore`
  - `SLife`
+ - `Flow.toLife` and `Flow.toELife` extension functions
 
 Modified:
  - `Flowable<T>.observeOnNext(): LifecycleOwner.(Consumer<T>) -> Unit` to `Flowable<T>.observeOnNext(): LifecycleOwner.((T) -> Unit) -> Unit`
