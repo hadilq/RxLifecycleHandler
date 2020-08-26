@@ -135,15 +135,7 @@ Since version 0.4.0 this library is a Kotlin Multiplatform library, so depend on
 implementation "com.github.hadilq:rx-lifecycle-handler-android:$libVersion"
 ```
 where the `libVersion` is [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rx-lifecycle-handler/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rx-lifecycle-handler).
-Use the above one if you already using this library or you need it in an android module. Use
-```groovy
-implementation "com.github.hadilq:rx-lifecycle-handler-jvm:$libVersion"
-```
-if you need **only** the interfaces in a Java module. And finally, in a common module of multiplatform project you would use those interfaces as
-```groovy
-implementation "com.github.hadilq:rx-lifecycle-handler-metadata:$libVersion"
-```
-
+Use the above one if you already using this library or you need it in an android module. 
 Contribution
 ---
 Just create your branch from the master branch, change it, write additional tests, satisfy all 
