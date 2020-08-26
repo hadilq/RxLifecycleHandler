@@ -136,6 +136,7 @@ implementation "com.github.hadilq:rx-lifecycle-handler-android:$libVersion"
 ```
 where the `libVersion` is [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rx-lifecycle-handler/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rx-lifecycle-handler).
 Use the above one if you already using this library or you need it in an android module. 
+
 Contribution
 ---
 Just create your branch from the master branch, change it, write additional tests, satisfy all 
