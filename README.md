@@ -1,4 +1,4 @@
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rxlifecyclehandler/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rxlifecyclehandler)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rx-lifecycle-handler/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rx-lifecycle-handler)
 [![CircleCI](https://circleci.com/gh/hadilq/RxLifecycleHandler.svg?style=svg)](https://circleci.com/gh/hadilq/RxLifecycleHandler)
 [![codecov](https://codecov.io/gh/hadilq/RxLifecycleHandler/branch/master/graph/badge.svg)](https://codecov.io/gh/hadilq/RxLifecycleHandler)
 
@@ -134,7 +134,7 @@ Since version 0.4.0 this library is a Kotlin Multiplatform library, so depend on
 ```groovy
 implementation "com.github.hadilq:rx-lifecycle-handler-android:$libVersion"
 ```
-where the `libVersion` is [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rxlifecyclehandler/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rxlifecyclehandler).
+where the `libVersion` is [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rx-lifecycle-handler/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rx-lifecycle-handler).
 Use the above one if you already using this library or you need it in an android module. Use
 ```groovy
 implementation "com.github.hadilq:rx-lifecycle-handler-jvm:$libVersion"
