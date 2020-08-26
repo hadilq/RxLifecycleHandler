@@ -135,7 +135,7 @@ Since version 0.4.0 this library is a Kotlin Multiplatform library, so depend on
 implementation "com.github.hadilq:rx-lifecycle-handler-android:$libVersion"
 ```
 where the `libVersion` is [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rx-lifecycle-handler/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rx-lifecycle-handler).
-Use the above one if you already using this library or you need it in an android module. 
+Use the above one if you already using this library or you need it in an android module. However as this library is depending on RxJava, it does not make sense to support common library of Multiplatform! Let's see how we can emerge the this idea to Multiplatform in the future!
 
 Contribution
 ---
