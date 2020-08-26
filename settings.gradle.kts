@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 Hadi Lashkari Ghouchani
+ * Copyright 2020 Hadi Lashkari Ghouchani
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-plugins {
-    `kotlin-dsl`
+enableFeaturePreview("GRADLE_METADATA")
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        jcenter()
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/dokka/dev")
+    }
 }
+rootProject.name = "RxLifecycleHandler"
 
-repositories {
-    jcenter()
-}
+include("app")
+include("rx-lifecycle-handler")
+
+includeBuild("build-plugin")

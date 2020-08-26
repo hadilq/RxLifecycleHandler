@@ -13,35 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import com.github.hadilq.build.plugin.*
+
 plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("android.extensions")
     kotlin("kapt")
+    id("com.github.hadilq.build-plugin")
 }
 
 android {
-    compileSdkVersion(Versions.compileSdk)
-    buildToolsVersion(Versions.buildTools)
+    compileSdkVersion(VERSION_COMPILE_SDK)
     defaultConfig {
         applicationId = "com.hadilq.rxlifecyclehandler.sample"
-        minSdkVersion(Versions.minSdk)
-        targetSdkVersion(Versions.targetSdk)
+        minSdkVersion(VERSION_MIN_SDK)
+        targetSdkVersion(VERSION_TARGET_SDK)
         versionCode = 1
         versionName = "1.0"
     }
 }
 
 dependencies {
-    kapt(Depends.lifecycleCompiler)
+    kapt(LIFECYCLE_COMPILER)
 
-    implementation(project(":lib"))
-//    implementation("${Versions.groupId}:${Versions.artifactId}:${Versions.libVersion}")
+    implementation(project(":rx-lifecycle-handler"))
+//    implementation("$GROUP_ID:rx-lifecycle-handler-android:${LIB_VERSION}")
 
-    implementation(Depends.kotlin)
-    implementation(Depends.appCompat)
-    implementation(Depends.lifecycle)
-    implementation(Depends.viewModle)
-    implementation(Depends.rxJava)
-    implementation(Depends.rxAndroid)
+    implementation(kotlin(KOTLIN_STDLIB))
+    implementation(ANDROIDX_APPCOMPAT)
+    implementation(LIFECYCLE)
+    implementation(ANDROIDX_VIEW_MODEL)
+    implementation(RX_JAVA)
+    implementation(RX_JAVA_ANDROID)
 }

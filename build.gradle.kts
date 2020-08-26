@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-plugins {
-    kotlin("jvm") version Versions.kotlin
-}
 buildscript {
+    val versionKotlin: String by project
+    val versionAndroidBuildTools: String by project
+
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:3.5.3")
-        classpath(kotlin("gradle-plugin", version = Versions.kotlin))
-        classpath("org.jetbrains.dokka:dokka-gradle-plugin:${Versions.dokka}")
-        classpath("com.dicedmelon.gradle:jacoco-android:${Versions.jacoco}")
+        classpath("com.android.tools.build:gradle:$versionAndroidBuildTools")
+        classpath(kotlin("gradle-plugin", version = versionKotlin))
     }
 }
 
@@ -34,5 +32,6 @@ allprojects {
         google()
         jcenter()
         mavenCentral()
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/dokka/dev")
     }
 }
