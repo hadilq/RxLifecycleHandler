@@ -130,11 +130,19 @@ Enjoy!
 
 Download
 ---
-Download via gradle
+Since version 0.4.0 this library is a Kotlin Multiplatform library, so depend on what kind of module you use it in, you can use different artifact IDs. Download via gradle
 ```groovy
-implementation "com.github.hadilq:rxlifecyclehandler:$libVersion"
+implementation "com.github.hadilq:rx-lifecycle-handler-android:$libVersion"
 ```
 where the `libVersion` is [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rxlifecyclehandler/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.hadilq/rxlifecyclehandler).
+Use the above one if you already using this library or you need it in an android module. Use
+```groovy
+implementation "com.github.hadilq:rx-lifecycle-handler-jvm:$libVersion"
+```
+if you need **only** the interfaces in a Java module. And finally, in a common module of multiplatform project you would use those interfaces as
+```groovy
+implementation "com.github.hadilq:rx-lifecycle-handler-metadata:$libVersion"
+```
 
 Contribution
 ---

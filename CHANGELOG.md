@@ -1,6 +1,21 @@
 Changelog
 =========
 
+0.4.0
+-----
+
+_2020-08-26_
+
+ - Move to Kotlin Multiplatform
+  + The previous artifactId was `rxlifecyclehandler` which is now as following:
+     * For Android, it's `rx-lifecycle-handler-android`
+     * For Jvm, it's `rx-lifecycle-handler-jvm`
+     * For Common, it's `rx-lifecycle-handler-metadata`
+ - Remove `buildSrc`, instead use composite build with `build-plugin`
+ - Configure JaCoCo
+ - Configure Maven Publication
+ - Configure Dokka
+
 0.3.0
 -----
 
